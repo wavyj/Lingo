@@ -1,0 +1,40 @@
+<resources>
+    <string name="app_name">ColemanJustin_DVP6Project</string>
+    <string name="usernameLabel">Username</string>
+    <string name="displaynameLabel">Display Name</string>
+    <string name="loginLabel">Login</string>
+    <string name="signupLabel">Signup</string>
+    <string name="connectBtn">Connect</string>
+    <string name="signupBtn">Signup</string>
+    <string name="loginBtn">Login</string>
+    <string name="alertTitle">Invalid</string>
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
+    <string name="emptyMessages">Start Chatting. Click the + to get started.</string>
+    <string name="search_hint">Search</string>
+    <string name="inputbar_hint">Enter a message...</string>
+
+    <!-- Date Headers -->
+    <string name="date_header_yesterday">Yesterday</string>
+    <string name="date_header_now">just now</string>
+    <string name="date_header_minute">a minute ago</string>
+    <string name="date_header_minutes">minutes ago</string>
+    <string name="date_header_hour">an hour ago</string>
+    <string name="date_header_hours">hours ago</string>
+
+    <!-- Main Menu Titles -->
+    <string name="account">Account</string>
+    <string name="settings">Settings</string>
+
+    <!-- Message Menu Titles -->
+    <string name="members">Members</string>
+    <string name="search">Search</string>
+    <string name="delete">Delete</string>
+
+    <!-- Google APIs -->
+    <string name="apiKey">AIzaSyAw9LRxbCzzZEeHoSaJx5XJFv0ULG5rd80</string>
+
+    <!-- SendBird -->
+    <string name="APP_ID">C5B1EC71-C373-4568-B634-EF2BEEAB8228</string>
+
+</resources>
