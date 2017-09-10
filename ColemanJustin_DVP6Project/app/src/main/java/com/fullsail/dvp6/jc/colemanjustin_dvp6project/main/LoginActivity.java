@@ -1,5 +1,6 @@
 package com.fullsail.dvp6.jc.colemanjustin_dvp6project.main;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.transition.Scene;
@@ -7,6 +8,7 @@ import android.support.transition.Transition;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -33,6 +35,7 @@ import com.sendbird.android.GroupChannelListQuery;
 import com.sendbird.android.SendBird;
 import com.sendbird.android.SendBirdException;
 import com.sendbird.android.User;
+import com.sendbird.android.UserListQuery;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,9 +45,9 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.to
         SignupFragment.toLoginListener{
 
     private static final String TAG = "LoginActivity";
-    private static final int SEARCHCODE = 0x01010;
 
-    @Override
+    private ProgressDialog mProgress;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
@@ -57,7 +60,7 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.to
             loginUser(username, displayName);
 
         }else {
-            // Authentication Fragment
+            // Login Fragment
             getFragmentManager().beginTransaction().replace(R.id.content_frame,
                     LoginFragment.newInstance(this), LoginFragment.TAG).commit();
         }
@@ -65,6 +68,11 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.to
 
     // METHODS
     private void loginUser(String username, final String displayName){
+        mProgress = new ProgressDialog(this);
+        mProgress.setIndeterminate(true);
+        mProgress.setMessage(getString(R.string.authenticating));
+        mProgress.show();
+
         SendBird.connect(username, new SendBird.ConnectHandler() {
             @Override
             public void onConnected(User user, SendBirdException e) {
@@ -79,6 +87,10 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.to
                 PreferencesUtil.setConnected(LoginActivity.this, true);
                 PreferencesUtil.updateDisplayName(displayName);
                 PreferencesUtil.updateUserToken();
+
+                Intent conversationsIntent = new Intent(LoginActivity.this, ConversationsActivity.class);
+                startActivity(conversationsIntent);
+                finish();
             }
         });
     }
