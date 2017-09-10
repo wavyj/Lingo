@@ -32,7 +32,7 @@ import static com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.TimeUtil.getT
 public class ConversationsFragment extends Fragment implements DialogsListAdapter.OnDialogViewClickListener {
 
     public static final String TAG = "MessengerFragment";
-    private static final int MESSAGING = 0x01000010;
+    private static final int MESSAGING = 0x01001;
 
     private DialogsList dialogsList;
     private DialogsListAdapter dialogsListAdapter;
@@ -114,17 +114,6 @@ public class ConversationsFragment extends Fragment implements DialogsListAdapte
         // To MessagesActivity
         Intent messageIntent = new Intent(getActivity(), MessagesActivity.class);
         messageIntent.putExtra("channel", current.getGroupChannel().serialize());
-        startActivityForResult(messageIntent, MESSAGING);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == RESULT_OK){
-            if (getActivity() instanceof LoginActivity){
-                ((ConversationsActivity) getActivity()).loadConversations();
-            }
-        }
+        getActivity().startActivityForResult(messageIntent, MESSAGING);
     }
 }

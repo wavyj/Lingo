@@ -58,7 +58,7 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.to
             loginUser(username, displayName);
 
         }else {
-            SendBird.connect("exampleID", new SendBird.ConnectHandler() {
+            SendBird.connect("bot", new SendBird.ConnectHandler() {
                 @Override
                 public void onConnected(User user, SendBirdException e) {
                     if (e != null){
