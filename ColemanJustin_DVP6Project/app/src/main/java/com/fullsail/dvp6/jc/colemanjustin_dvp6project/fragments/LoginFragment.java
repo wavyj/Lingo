@@ -116,9 +116,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                     } else {
                         String displayName = mSavedDisplayname.replaceAll("\\s", "");
 
-                        PreferencesUtil.setUserId(getActivity(), mSavedUsername);
-                        PreferencesUtil.setDisplayName(getActivity(), displayName);
-
                         loginUser(mSavedUsername, displayName);
                     }
                 }
@@ -161,6 +158,9 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                                 PreferencesUtil.setConnected(getActivity(), false);
                                 return;
                             }
+
+                            PreferencesUtil.setUserId(getActivity(), mSavedUsername);
+                            PreferencesUtil.setDisplayName(getActivity(), displayName);
 
                             PreferencesUtil.setConnected(getActivity(), true);
                             PreferencesUtil.updateDisplayName(displayName);

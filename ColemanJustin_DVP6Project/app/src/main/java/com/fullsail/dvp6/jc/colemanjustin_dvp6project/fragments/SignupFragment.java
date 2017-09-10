@@ -121,7 +121,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener{
                 // dismiss progress
                 mProgress.cancel();
 
-                if (list != null && list.size() > 0){
+                if (list != null && list.size() != 0){
                     // Signup user
                     SendBird.connect(username, new SendBird.ConnectHandler() {
                         @Override
@@ -133,6 +133,9 @@ public class SignupFragment extends Fragment implements View.OnClickListener{
                                 PreferencesUtil.setConnected(getActivity(), false);
                                 return;
                             }
+
+                            PreferencesUtil.setUserId(getActivity(), mSavedUsername);
+                            PreferencesUtil.setDisplayName(getActivity(), displayName);
 
                             PreferencesUtil.setConnected(getActivity(), true);
                             PreferencesUtil.updateDisplayName(displayName);

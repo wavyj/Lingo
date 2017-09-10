@@ -43,7 +43,10 @@ public class ConversationsActivity extends AppCompatActivity implements View.OnC
         fab.setOnClickListener(this);
 
         // Toolbar Setup
-        showToolbar();
+        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar.setTitle("Messages");
+        mToolbar.setTitleTextColor(ContextCompat.getColor(this, android.R.color.white));
+        setSupportActionBar(mToolbar);
 
         loadConversations();
 
@@ -88,19 +91,15 @@ public class ConversationsActivity extends AppCompatActivity implements View.OnC
         showHideFab();
     }
 
-    private void showToolbar(){
-        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        mToolbar.setTitle("Messages");
-        mToolbar.setTitleTextColor(ContextCompat.getColor(this, android.R.color.white));
-        setSupportActionBar(mToolbar);
-    }
-
     public void loadConversations(){
         isLoading = true;
+        List<String> ids = new ArrayList<>();
+        ids.add(SendBird.getCurrentUser().getUserId());
 
         // Load all conversations
         GroupChannelListQuery channelListQuery = GroupChannel.createMyGroupChannelListQuery();
         channelListQuery.setIncludeEmpty(true);
+        channelListQuery.setUserIdsIncludeFilter(ids, GroupChannelListQuery.QueryType.AND);
         channelListQuery.next(new GroupChannelListQuery.GroupChannelListQueryResultHandler() {
             @Override
             public void onResult(List<GroupChannel> list, SendBirdException e) {
@@ -136,18 +135,14 @@ public class ConversationsActivity extends AppCompatActivity implements View.OnC
             @Override
             public void onMessageReceived(BaseChannel baseChannel, BaseMessage baseMessage) {
                 // Refresh
-                if (!isLoading){
-                    loadConversations();
-                }
+                loadConversations();
             }
 
             @Override
             public void onChannelDeleted(String channelUrl, BaseChannel.ChannelType channelType) {
                 super.onChannelDeleted(channelUrl, channelType);
                 // Refresh
-                if (!isLoading) {
-                    loadConversations();
-                }
+                loadConversations();
             }
         });
     }

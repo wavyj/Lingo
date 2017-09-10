@@ -60,6 +60,15 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.to
             loginUser(username, displayName);
 
         }else {
+            SendBird.connect("exampleID", new SendBird.ConnectHandler() {
+                @Override
+                public void onConnected(User user, SendBirdException e) {
+                    if (e != null){
+                        e.printStackTrace();
+                    }
+                }
+            });
+
             // Login Fragment
             getFragmentManager().beginTransaction().replace(R.id.content_frame,
                     LoginFragment.newInstance(this), LoginFragment.TAG).commit();
