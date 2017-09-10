@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.R;
+import com.fullsail.dvp6.jc.colemanjustin_dvp6project.main.ConversationsActivity;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.main.LoginActivity;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.main.MessagesActivity;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.Dialog;
@@ -122,7 +123,7 @@ public class ConversationsFragment extends Fragment implements DialogsListAdapte
 
         if (resultCode == RESULT_OK){
             if (getActivity() instanceof LoginActivity){
-                ((LoginActivity) getActivity()).loadConversations();
+                ((ConversationsActivity) getActivity()).loadConversations();
             }
         }
     }

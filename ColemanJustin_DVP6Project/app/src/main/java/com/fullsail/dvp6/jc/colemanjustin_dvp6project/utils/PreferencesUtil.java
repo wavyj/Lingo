@@ -7,6 +7,10 @@ package com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.sendbird.android.SendBird;
+import com.sendbird.android.SendBirdException;
+
 public class PreferencesUtil {
 
     public static final String USER_ID = "userID";
@@ -51,5 +55,32 @@ public class PreferencesUtil {
     public static void clearAll(Context context){
         SharedPreferences.Editor editor = getSharedPreferences(context).edit();
         editor.clear().apply();
+    }
+
+    public static void updateDisplayName(String displayName){
+        SendBird.updateCurrentUserInfo(displayName, null, new SendBird.UserInfoUpdateHandler() {
+            @Override
+            public void onUpdated(SendBirdException e) {
+                if (e != null){
+                    // Error
+                    e.printStackTrace();
+
+                }
+            }
+        });
+    }
+
+    public static void updateUserToken(){
+        SendBird.registerPushTokenForCurrentUser(FirebaseInstanceId.getInstance().getToken(),
+                new SendBird.RegisterPushTokenWithStatusHandler() {
+            @Override
+            public void onRegistered(SendBird.PushTokenRegistrationStatus pushTokenRegistrationStatus
+                    , SendBirdException e) {
+                if (e != null){
+                    // Error
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 }
