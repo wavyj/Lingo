@@ -4,22 +4,17 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.R;
-import com.fullsail.dvp6.jc.colemanjustin_dvp6project.main.MainActivity;
+import com.fullsail.dvp6.jc.colemanjustin_dvp6project.main.LoginActivity;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.main.MessagesActivity;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.Dialog;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.DialogsUtil;
-import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.Message;
-import com.sendbird.android.BaseChannel;
-import com.sendbird.android.BaseMessage;
 import com.sendbird.android.GroupChannel;
-import com.sendbird.android.SendBird;
 import com.squareup.picasso.Picasso;
 import com.stfalcon.chatkit.commons.ImageLoader;
 import com.stfalcon.chatkit.commons.models.IDialog;
@@ -126,8 +121,8 @@ public class ConversationsFragment extends Fragment implements DialogsListAdapte
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK){
-            if (getActivity() instanceof  MainActivity){
-                ((MainActivity) getActivity()).loadConversations();
+            if (getActivity() instanceof LoginActivity){
+                ((LoginActivity) getActivity()).loadConversations();
             }
         }
     }

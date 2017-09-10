@@ -1,52 +1,43 @@
 package com.fullsail.dvp6.jc.colemanjustin_dvp6project.main;
 
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.os.Build;
-import android.os.PersistableBundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.transition.Scene;
+import android.support.transition.Transition;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import android.transition.Slide;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
+import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.R;
-import com.fullsail.dvp6.jc.colemanjustin_dvp6project.fragments.AuthenticationFragment;
+import com.fullsail.dvp6.jc.colemanjustin_dvp6project.fragments.LoginFragment;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.fragments.ConversationsFragment;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.fragments.EmptyMessagesFragment;
-import com.fullsail.dvp6.jc.colemanjustin_dvp6project.fragments.MessagingFragment;
-import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.Author;
-import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.Message;
+import com.fullsail.dvp6.jc.colemanjustin_dvp6project.fragments.SignupFragment;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.PreferencesUtil;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.sendbird.android.BaseChannel;
 import com.sendbird.android.BaseMessage;
 import com.sendbird.android.GroupChannel;
 import com.sendbird.android.GroupChannelListQuery;
-import com.sendbird.android.OpenChannel;
 import com.sendbird.android.SendBird;
 import com.sendbird.android.SendBirdException;
 import com.sendbird.android.User;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener{
 
     private static final String TAG = "MainActivity";
     private static final int SEARCHCODE = 0x01010;
@@ -59,11 +50,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ActionBarDrawerToggle mDrawerToggle;
     private ArrayList<byte[]> mConversations;
     private boolean isLoading = false;
+    private Scene mScene;
+    private Transition enterTransition;
+    private Transition exitTransition;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_login);
 
         mConversations = new ArrayList<>();
 
@@ -85,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }else {
             // Authentication Fragment
             getFragmentManager().beginTransaction().replace(R.id.content_frame,
-                    AuthenticationFragment.newInstance(), AuthenticationFragment.TAG).commit();
+                    LoginFragment.newInstance(), LoginFragment.TAG).commit();
         }
 
         SendBird.setAutoBackgroundDetection(true);
@@ -130,6 +125,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     // METHODS
+
     private void showToolbar(){
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mToolbar.setTitle("Messages");
@@ -145,11 +141,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     // Error
                     e.printStackTrace();
 
-                    PreferencesUtil.setConnected(MainActivity.this, false);
+                    PreferencesUtil.setConnected(LoginActivity.this, false);
                     return;
                 }
 
-                PreferencesUtil.setConnected(MainActivity.this, true);
+                PreferencesUtil.setConnected(LoginActivity.this, true);
                 updateUserInfo(displayName);
                 updateUserToken();
 
@@ -233,6 +229,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 loadConversations();
             }
         });
+    }
+
+    public void toSignup(){
+        SignupFragment signupFragment = SignupFragment.newInstance();
+
+        Slide slide = new Slide(Gravity.RIGHT);
+        slide.setDuration(250);
+        signupFragment.setEnterTransition(slide);
+        signupFragment.setSharedElementEnterTransition(slide);
+        signupFragment.setAllowEnterTransitionOverlap(true);
+
+        getFragmentManager().beginTransaction().replace(R.id.content_frame, signupFragment).commit();
+    }
+
+    public void toLogin(){
+        LoginFragment loginFragment = LoginFragment.newInstance();
+
+        Slide slide = new Slide(Gravity.LEFT);
+        slide.setDuration(150);
+        loginFragment.setEnterTransition(slide);
+        loginFragment.setSharedElementEnterTransition(slide);
+        loginFragment.setAllowEnterTransitionOverlap(true);
+
+        getFragmentManager().beginTransaction().replace(R.id.content_frame, loginFragment).commit();
     }
 
     @Override

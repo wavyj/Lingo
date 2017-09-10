@@ -4,19 +4,14 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.Build;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.R;
-import com.fullsail.dvp6.jc.colemanjustin_dvp6project.main.MainActivity;
+import com.fullsail.dvp6.jc.colemanjustin_dvp6project.main.LoginActivity;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-import com.sendbird.android.shadow.com.google.gson.JsonElement;
-import com.sendbird.android.shadow.com.google.gson.JsonObject;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
@@ -59,7 +54,7 @@ public class FirebaseMessageingService extends FirebaseMessagingService {
     private void sendNotification(Context context, String message, String senderName,
                                   String senderPhoto, String channelUrl){
 
-        Intent intent = new Intent(context, MainActivity.class);
+        Intent intent = new Intent(context, LoginActivity.class);
         intent.putExtra("channelUrl", channelUrl);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 

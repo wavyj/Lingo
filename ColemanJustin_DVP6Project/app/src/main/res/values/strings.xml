@@ -7,6 +7,8 @@
     <string name="connectBtn">Connect</string>
     <string name="signupBtn">Signup</string>
     <string name="loginBtn">Login</string>
+    <string name="noaccount">No account yet? Create One</string>
+    <string name="haveaccount">Have an account? Log in</string>
     <string name="alertTitle">Invalid</string>
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
@@ -30,6 +32,13 @@
     <string name="members">Members</string>
     <string name="search">Search</string>
     <string name="delete">Delete</string>
+
+    <!-- Transitions -->
+    <string name="logo">logo</string>
+    <string name="userID">ID</string>
+    <string name="displayname">name</string>
+    <string name="btn">button</string>
+    <string name="link">link</string>
 
     <!-- Google APIs -->
     <string name="apiKey">AIzaSyAw9LRxbCzzZEeHoSaJx5XJFv0ULG5rd80</string>

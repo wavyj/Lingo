@@ -1,13 +1,30 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
+        <item name="colorAccent">@color/white</item>
+
+        <!-- EditText -->
+        <item name="android:colorControlNormal">@color/gray</item>
+        <item name="android:colorControlActivated">@color/white</item>
+        <item name="android:colorControlHighlight">@color/white</item>
+        <item name="android:textColorHint">@color/gray</item>
+
+        <!-- Button -->
+        <item name="android:colorButtonNormal">@color/colorPrimaryDark</item>
+
+        <!-- Transitions -->
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:windowSharedElementEnterTransition">@transition/slide</item>
+        <item name="android:windowSharedElementExitTransition">@transition/slide</item>
+
+    </style>
+
+    <style name="AppTheme.login">
+        <item name="android:background">@color/colorPrimary</item>
     </style>
 
 </resources>

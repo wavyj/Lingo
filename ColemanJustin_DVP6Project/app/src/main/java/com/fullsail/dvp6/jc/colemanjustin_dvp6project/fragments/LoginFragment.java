@@ -8,20 +8,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.R;
-import com.fullsail.dvp6.jc.colemanjustin_dvp6project.main.MainActivity;
+import com.fullsail.dvp6.jc.colemanjustin_dvp6project.main.LoginActivity;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.PreferencesUtil;
 
-public class AuthenticationFragment extends Fragment implements View.OnClickListener {
+public class LoginFragment extends Fragment implements View.OnClickListener {
 
     public static final String TAG = "AuthenticationFragment";
 
-    public static AuthenticationFragment newInstance() {
+    public static LoginFragment newInstance() {
 
         Bundle args = new Bundle();
 
-        AuthenticationFragment fragment = new AuthenticationFragment();
+        LoginFragment fragment = new LoginFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -35,6 +36,8 @@ public class AuthenticationFragment extends Fragment implements View.OnClickList
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        TextView signupLink = (TextView) getView().findViewById(R.id.toSignupLink);
+        signupLink.setOnClickListener(this);
         Button connectBtn = (Button) getView().findViewById(R.id.connectBtn);
         connectBtn.setOnClickListener(this);
     }
@@ -56,9 +59,14 @@ public class AuthenticationFragment extends Fragment implements View.OnClickList
                     PreferencesUtil.setUserId(getActivity(), username);
                     PreferencesUtil.setDisplayName(getActivity(), displayname);
 
-                    if (getActivity() instanceof MainActivity){
-                        ((MainActivity) getActivity()).loginUser(username, displayname);
+                    if (getActivity() instanceof LoginActivity){
+                        ((LoginActivity) getActivity()).loginUser(username, displayname);
                     }
+                }
+                break;
+            case R.id.toSignupLink:
+                if (getActivity() instanceof LoginActivity){
+                    ((LoginActivity) getActivity()).toSignup();
                 }
         }
     }

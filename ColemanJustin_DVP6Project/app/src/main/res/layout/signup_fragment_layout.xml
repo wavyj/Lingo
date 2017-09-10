@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/signupView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp"
+            android:paddingTop="56dp">
+
+
+            <ImageView android:id="@+id/logo"
+                android:layout_width="wrap_content"
+                android:layout_height="72dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="24dp"
+                android:src="@drawable/message_plus_icon"
+                android:transitionName="@string/logo"/>
+
+                <EditText
+                    android:id="@+id/usernameInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:hint="@string/usernameLabel"
+                    android:inputType="textPersonName"
+                    android:textColor="@color/white"
+                    android:transitionName="@string/userID"
+                    android:layout_marginBottom="24dp"/>
+
+                <EditText
+                    android:id="@+id/displaynameInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:ems="10"
+                    android:hint="@string/displaynameLabel"
+                    android:inputType="textPersonName"
+                    android:textColor="@color/white"
+                    android:transitionName="@string/displayname"/>
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/connectBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:layout_marginTop="24dp"
+                android:text="@string/signupBtn"
+                android:textColor="@color/white"
+                android:transitionName="@string/btn"/>
+
+            <TextView
+                android:id="@+id/toLoginLink"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:gravity="center"
+                android:text="@string/haveaccount"
+                android:textColor="@color/gray"
+                android:textSize="16sp"
+                android:transitionName="@string/link"/>
+        </LinearLayout>
+
+    </ScrollView>
