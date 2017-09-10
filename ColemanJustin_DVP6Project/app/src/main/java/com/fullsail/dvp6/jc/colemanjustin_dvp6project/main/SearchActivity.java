@@ -69,7 +69,7 @@ public class SearchActivity extends AppCompatActivity {
                         ArrayList<User> userList = new ArrayList<User>();
                         for (User i: list){
                             if (!i.getUserId().equals(SendBird.getCurrentUser().getUserId())) {
-                                if (i.getUserId().contains(query) || i.getNickname().contains(query)) {
+                                if (i.getNickname().contains(query)) {
                                     userList.add(i);
                                 }
                             }
@@ -129,7 +129,7 @@ public class SearchActivity extends AppCompatActivity {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             final User selected = mUsers.get(position);
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(SearchActivity.this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(SearchActivity.this, R.style.dialog);
             builder.setTitle("Start Conversation with " + selected.getNickname() + "?");
             builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                 @Override
@@ -167,7 +167,7 @@ public class SearchActivity extends AppCompatActivity {
 
     private void checkEmpty(String query){
         if (mUsers == null || mUsers.size() == 0 ){
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.dialog);
             builder.setTitle("No Results");
             builder.setMessage("\"" + query + "\"" + " Not Found");
             builder.setNeutralButton("OK", null);

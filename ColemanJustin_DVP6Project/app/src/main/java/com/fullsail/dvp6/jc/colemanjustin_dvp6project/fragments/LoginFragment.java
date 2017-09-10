@@ -126,7 +126,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     }
 
     private void loginUser(final String username, final String displayName){
-        mProgress = new ProgressDialog(getActivity());
+        mProgress = new ProgressDialog(getActivity(), R.style.dialog);
         mProgress.setIndeterminate(true);
         mProgress.setMessage(getString(R.string.authenticating));
         mProgress.show();
@@ -172,7 +172,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                         }
                     });
                 } else {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.dialog);
                     builder.setTitle(R.string.notfound);
                     builder.setMessage(R.string.notfoundMsg);
                     builder.setNeutralButton(R.string.ok, null);

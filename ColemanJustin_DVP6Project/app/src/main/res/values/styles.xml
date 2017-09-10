@@ -27,4 +27,7 @@
         <item name="android:background">@color/colorPrimary</item>
     </style>
 
+    <style name="dialog" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:colorAccent">@color/colorPrimary</item>]
+    </style>
 </resources>

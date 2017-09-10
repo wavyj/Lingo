@@ -46,8 +46,6 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.to
 
     private static final String TAG = "LoginActivity";
 
-    private ProgressDialog mProgress;
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
@@ -77,11 +75,6 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.to
 
     // METHODS
     private void loginUser(String username, final String displayName){
-        mProgress = new ProgressDialog(this);
-        mProgress.setIndeterminate(true);
-        mProgress.setMessage(getString(R.string.authenticating));
-        mProgress.show();
-
         SendBird.connect(username, new SendBird.ConnectHandler() {
             @Override
             public void onConnected(User user, SendBirdException e) {
