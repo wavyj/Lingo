@@ -26,3 +26,7 @@ The SendBird api handles signup and login in one call meaning that if the user d
 ### UI
 * Toolbars/appbars displayed when they shouldnt 
 
+## Built With
+* [SendBird](https://sendbird.com) - Messaging and Authentication
+* [ChatKit](https://github.com/stfalcon-studio/ChatKit) - Chat Interface
+* [Firebase Cloud Messaging](https://firebase.google.com/products/cloud-messaging/) - Notifications
