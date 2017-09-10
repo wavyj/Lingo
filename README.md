@@ -30,3 +30,4 @@ The SendBird api handles signup and login in one call meaning that if the user d
 * [SendBird](https://sendbird.com) - Messaging and Authentication
 * [ChatKit](https://github.com/stfalcon-studio/ChatKit) - Chat Interface
 * [Firebase Cloud Messaging](https://firebase.google.com/products/cloud-messaging/) - Notifications
+* [MaterialSearchView](https://github.com/MiguelCatalan/MaterialSearchView) - SearchBar
