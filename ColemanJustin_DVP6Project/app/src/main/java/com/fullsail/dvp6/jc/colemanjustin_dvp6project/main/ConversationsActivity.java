@@ -59,6 +59,12 @@ public class ConversationsActivity extends AppCompatActivity implements View.OnC
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        SendBird.removeAllChannelHandlers();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()){

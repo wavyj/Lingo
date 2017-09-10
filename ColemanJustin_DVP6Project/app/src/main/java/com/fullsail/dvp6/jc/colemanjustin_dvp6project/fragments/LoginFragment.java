@@ -64,12 +64,14 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     public void onViewStateRestored(Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
 
-        if (savedInstanceState.getString("username") != null){
-            mSavedUsername = savedInstanceState.getString("username");
-        }
+        if (savedInstanceState != null) {
+            if (savedInstanceState.getString("username") != null) {
+                mSavedUsername = savedInstanceState.getString("username");
+            }
 
-        if (savedInstanceState.getString("displayname") != null){
-            mSavedDisplayname = savedInstanceState.getString("displayname");
+            if (savedInstanceState.getString("displayname") != null) {
+                mSavedDisplayname = savedInstanceState.getString("displayname");
+            }
         }
     }
 
