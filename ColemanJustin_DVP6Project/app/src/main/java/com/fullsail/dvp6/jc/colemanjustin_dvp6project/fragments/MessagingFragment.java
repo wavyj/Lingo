@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.R;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.main.ImagePickerActivity;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.main.MessagesActivity;
+import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.ImageMessage;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.Message;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.TimeUtil;
 import com.sendbird.android.AdminMessage;
@@ -34,6 +35,7 @@ import com.stfalcon.chatkit.messages.MessageInput;
 import com.stfalcon.chatkit.messages.MessagesList;
 import com.stfalcon.chatkit.messages.MessagesListAdapter;
 import com.stfalcon.chatkit.utils.DateFormatter;
+import com.zhihu.matisse.MimeType;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -51,7 +53,6 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
     private MessagesListAdapter<Message> messagesListAdapter;
     private ImageLoader imageLoader;
     private GroupChannel groupChannel;
-    private String imageUrl;
 
     public static MessagingFragment newInstance(byte[] selection) {
 
@@ -146,7 +147,8 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
                             AdminMessage msg = (AdminMessage) AdminMessage.buildFromSerializedData(baseMessage.serialize());
                             m = new Message(msg);
                         } else if (FileMessage.buildFromSerializedData(baseMessage.serialize()) instanceof FileMessage) {
-
+                            FileMessage msg = (FileMessage) FileMessage.buildFromSerializedData(baseMessage.serialize());
+                            m = new ImageMessage(msg);
                         }
 
                         // Update display
@@ -176,7 +178,9 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
                         messages.add(m);*/
 
                     }else if (i instanceof FileMessage){
-
+                        FileMessage msg = (FileMessage) FileMessage.buildFromSerializedData(i.serialize());
+                        ImageMessage m = new ImageMessage(msg);
+                        messages.add(m);
                     }
                 }
 
@@ -255,9 +259,29 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
 
 
     // Firebase Storage Upload
-
     @Override
-    public void onReceived(String url) {
-        imageUrl = url;
+    public void onReceived(String url, int size) {
+        sendImage(url, size);
+    }
+
+    // Image Message
+    private void sendImage(String url, int size){
+        groupChannel.sendFileMessage(url, "new Image", "image", size, "Image", new BaseChannel.SendFileMessageHandler() {
+            @Override
+            public void onSent(FileMessage fileMessage, SendBirdException e) {
+                if (e != null){
+                    // Error
+                    e.printStackTrace();
+                }
+
+                if (fileMessage != null) {
+                    Log.d(TAG, fileMessage.getUrl());
+
+                    ImageMessage m = new ImageMessage(fileMessage);
+                    messagesListAdapter.addToStart(m, true);
+                }
+
+            }
+        });
     }
 }

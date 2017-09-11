@@ -37,12 +37,12 @@ public class MessagesActivity extends AppCompatActivity implements ImageUploader
     public Toolbar mToolbar;
 
     @Override
-    public void onUploadComplete(String imageUrl) {
-        mOnReceivedPath.onReceived(imageUrl);
+    public void onUploadComplete(String imageUrl, int size) {
+        mOnReceivedPath.onReceived(imageUrl, size);
     }
 
     public interface onReceivedUploadPath{
-        void onReceived(String url);
+        void onReceived(String url, int size);
     }
 
     @Override
@@ -125,8 +125,9 @@ public class MessagesActivity extends AppCompatActivity implements ImageUploader
         if (requestCode == 0x0111 && resultCode == RESULT_OK){
             // Handle selected images
             List<Uri> selected = Matisse.obtainResult(data);
-            //MessagingFragment messagingFragment = (MessagingFragment) getFragmentManager().
-                    //findFragmentByTag(MessagingFragment.TAG);
+
+            mOnReceivedPath = (MessagingFragment) getFragmentManager().
+                    findFragmentByTag(MessagingFragment.TAG);
 
             ImageUploader imageUploader = new ImageUploader(this, selected.get(0));
 

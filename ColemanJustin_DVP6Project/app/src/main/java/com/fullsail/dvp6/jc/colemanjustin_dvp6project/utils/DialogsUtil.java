@@ -33,7 +33,9 @@ public final class DialogsUtil {
                     m = new Message(msg);
 
                 } else if (FileMessage.buildFromSerializedData(i.getLastMessage().serialize()) instanceof FileMessage) {
-
+                    FileMessage msg = (FileMessage) FileMessage.buildFromSerializedData(i.getLastMessage().serialize());
+                    m = new Message(String.valueOf(msg.getMessageId()), new Author(msg.getSender()),
+                            "Image", new Date(msg.getCreatedAt()));
                 }
                 chats.add(getDialog(i, new Date(i.getLastMessage().getCreatedAt()), m));
             }else {

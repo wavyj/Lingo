@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.sendbird.android.AdminMessage;
 import com.sendbird.android.BaseMessage;
+import com.sendbird.android.FileMessage;
 import com.sendbird.android.SendBird;
 import com.sendbird.android.SendBirdException;
 import com.sendbird.android.User;
@@ -11,6 +12,7 @@ import com.sendbird.android.UserListQuery;
 import com.sendbird.android.UserMessage;
 import com.stfalcon.chatkit.commons.models.IMessage;
 import com.stfalcon.chatkit.commons.models.IUser;
+import com.stfalcon.chatkit.commons.models.MessageContentType;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -22,7 +24,6 @@ public class Message implements IMessage {
     private String mText;
     private Author mUser;
     private Date mCreatedAt;
-    private String mImageUrl = "";
 
     public Message(UserMessage message){
         mID = String.valueOf(message.getMessageId());
@@ -53,6 +54,13 @@ public class Message implements IMessage {
         getAdminUser(adminID);
     }
 
+    public Message(FileMessage fileMessage){
+        mID = String.valueOf(fileMessage.getMessageId());
+        mText = "";
+        mCreatedAt = new Date(fileMessage.getCreatedAt());
+        mUser = new Author(fileMessage.getSender());
+    }
+
     @Override
     public String getId() {
         return mID;
@@ -74,14 +82,6 @@ public class Message implements IMessage {
             return mCreatedAt;
         }
         return new Date();
-    }
-
-    public void setImageUrl(String url){
-        mImageUrl = url;
-    }
-
-    public String getImageUrl(){
-        return mImageUrl;
     }
 
     private void getAdminUser(String adminID){

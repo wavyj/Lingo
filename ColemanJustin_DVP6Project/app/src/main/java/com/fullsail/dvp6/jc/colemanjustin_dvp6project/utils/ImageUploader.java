@@ -14,6 +14,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnPausedListener;
 import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.sendbird.android.SendBird;
@@ -30,20 +31,21 @@ public class ImageUploader{
     private StorageReference mStorageRef;
     private UploadTask mUploadTask;
     private String mImageUrl;
+    private onImageUploadedListener mUploadListener;
 
     public interface onImageUploadedListener{
-        void onUploadComplete(String imageUrl);
+        void onUploadComplete(String imageUrl, int size);
     }
 
-    public ImageUploader(Context context, Uri path){
-        mContext = context;
+    public ImageUploader(onImageUploadedListener uploadedListener, Uri path){
+        mUploadListener = uploadedListener;
         mAuth = FirebaseAuth.getInstance();
         signInAnon(path);
         mStorageRef = FirebaseStorage.getInstance().getReferenceFromUrl("gs://dvp6-project.appspot.com/");
     }
 
     private void uploadImage(Uri path){
-        String imageName = SendBird.getCurrentUser().getUserId() + "/" + path.getLastPathSegment();
+        final String imageName = SendBird.getCurrentUser().getUserId() + "/" + path.getLastPathSegment();
         final StorageReference imageRef = mStorageRef.child("images/" + imageName);
 
         // Upload Image
@@ -58,12 +60,26 @@ public class ImageUploader{
                     @Override
                     public void onSuccess(Uri uri) {
                         mImageUrl = uri.toString();
-                        Log.d(TAG, mImageUrl);
+
+                        //Log.d(TAG, mImageUrl);
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         //Error
+                        e.printStackTrace();
+                    }
+                });
+
+                imageRef.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
+                    @Override
+                    public void onSuccess(StorageMetadata storageMetadata) {
+                        int size = (int) storageMetadata.getSizeBytes();
+                        mUploadListener.onUploadComplete(mImageUrl, size);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
                         e.printStackTrace();
                     }
                 });
