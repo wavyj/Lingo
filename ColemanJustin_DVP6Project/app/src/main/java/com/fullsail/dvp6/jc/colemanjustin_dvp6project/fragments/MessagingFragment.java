@@ -266,7 +266,7 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
 
     // Image Message
     private void sendImage(String url, int size){
-        groupChannel.sendFileMessage(url, "new Image", "image", size, "Image", new BaseChannel.SendFileMessageHandler() {
+        groupChannel.sendFileMessage(url, "Image", "image", 0, "Image", new BaseChannel.SendFileMessageHandler() {
             @Override
             public void onSent(FileMessage fileMessage, SendBirdException e) {
                 if (e != null){

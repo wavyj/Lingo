@@ -7,17 +7,21 @@ import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.R;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.main.LoginActivity;
+import com.fullsail.dvp6.jc.colemanjustin_dvp6project.main.MessagesActivity;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class FirebaseMessageingService extends FirebaseMessagingService {
     private static final String TAG = "FirebaseMessageingServi";
@@ -29,10 +33,20 @@ public class FirebaseMessageingService extends FirebaseMessagingService {
         String channelUrl = null;
         String senderName = null;
         String senderPhoto = null;
+        String imageUrl = null;
 
         // Parse Data
         try{
             JSONObject sendBird = new JSONObject(remoteMessage.getData().get("sendbird"));
+
+            // Type
+            String type = sendBird.getString("type");
+            Log.d(TAG, type);
+            if (type.equals("FILE")){
+                JSONArray files = sendBird.getJSONArray("files");
+                JSONObject imageMessage = files.getJSONObject(0);
+                imageUrl = imageMessage.getString("url");
+            }
 
             // Channel
             JSONObject channel = sendBird.getJSONObject("channel");
@@ -43,7 +57,7 @@ public class FirebaseMessageingService extends FirebaseMessagingService {
             senderName = sender.getString("name");
             senderPhoto = sender.getString("profile_url");
 
-            sendNotification(this, message, senderName, senderPhoto, channelUrl);
+            sendNotification(this, message, senderName, senderPhoto, channelUrl, imageUrl);
 
         }catch (JSONException e){
             e.printStackTrace();
@@ -52,10 +66,10 @@ public class FirebaseMessageingService extends FirebaseMessagingService {
     }
 
     private void sendNotification(Context context, String message, String senderName,
-                                  String senderPhoto, String channelUrl){
+                                  String senderPhoto, String channelUrl, String imageUrl){
 
-        Intent intent = new Intent(context, LoginActivity.class);
-        intent.putExtra("channelUrl", channelUrl);
+        Intent intent = new Intent(context, MessagesActivity.class);
+        intent.putExtra("CHANNEL", channelUrl);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.
@@ -74,6 +88,17 @@ public class FirebaseMessageingService extends FirebaseMessagingService {
         builder.setSound(notificationSound);
         builder.setContentIntent(pendingIntent);
         builder.setAutoCancel(true);
+
+        // Image Message Notification
+        if (imageUrl != null){
+            NotificationCompat.BigPictureStyle bigPictureStyle =  new NotificationCompat.BigPictureStyle();
+            try {
+                bigPictureStyle.bigPicture(Picasso.with(this).load(imageUrl).get());
+                builder.setStyle(bigPictureStyle);
+            } catch (IOException e){
+                e.printStackTrace();
+            }
+        }
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
         notificationManager.notify(0x01010, builder.build());
