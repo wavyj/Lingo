@@ -60,7 +60,8 @@
             android:resource="@color/colorAccent" />
 
         <activity android:name=".main.AccountActivity" />
-        <activity android:name=".main.ConversationsActivity"></activity>
+        <activity android:name=".main.ConversationsActivity" />
+        <activity android:name=".main.ImagePickerActivity"></activity>
     </application>
 
 </manifest>

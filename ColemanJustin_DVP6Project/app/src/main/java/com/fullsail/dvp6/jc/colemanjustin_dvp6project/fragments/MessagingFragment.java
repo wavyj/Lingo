@@ -1,9 +1,15 @@
 package com.fullsail.dvp6.jc.colemanjustin_dvp6project.fragments;
 
+import android.app.Activity;
+import android.app.Dialog;
 import android.app.Fragment;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateUtils;
 import android.util.Log;
@@ -13,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.R;
+import com.fullsail.dvp6.jc.colemanjustin_dvp6project.main.ImagePickerActivity;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.main.MessagesActivity;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.Message;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.TimeUtil;
@@ -40,7 +47,7 @@ import java.util.List;
 
 import static com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.TimeUtil.getTimeAgo;
 
-public class MessagingFragment extends Fragment {
+public class MessagingFragment extends Fragment implements MessageInput.AttachmentsListener, Dialog.OnClickListener {
 
     public static final String TAG = "MessagingFragment";
 
@@ -96,6 +103,7 @@ public class MessagingFragment extends Fragment {
                 return true;
             }
         });
+        inputView.setAttachmentsListener(this);
 
         // Messaging Setup
         messagesList = (MessagesList) getView().findViewById(R.id.messagesList);
@@ -220,5 +228,32 @@ public class MessagingFragment extends Fragment {
                 }
             }
         });
+    }
+
+    @Override
+    public void onAddAttachments() {
+        new AlertDialog.Builder(getActivity(), R.style.dialog).setItems(R.array.othermessages, this).show();
+    }
+
+    @Override
+    public void onClick(DialogInterface dialog, int selection) {
+        switch (selection){
+            case 0:
+                // Image
+                Intent imagePickerIntent = new Intent(getActivity(), ImagePickerActivity.class);
+                getActivity().startActivityForResult(imagePickerIntent, 0x0111);
+                break;
+            case 1:
+                // Voice
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 0x0111 && resultCode == Activity.RESULT_OK){
+
+        }
     }
 }

@@ -25,6 +25,16 @@
     <string name="exists">Not Available</string>
     <string name="existsMsg">Username is already taken.</string>
 
+    <array name="othermessages">
+        <item>Image</item>
+        <item>Voice</item>
+    </array>
+
+    <string name="permissiontitle">Permission Required</string>
+    <string name="permissionmsg">Access to your external storage is required to send image messages.</string>
+    <string name="tryagain">Try Again</string>
+    <string name="cancel">Cancel</string>
+
     <!-- Date Headers -->
     <string name="date_header_yesterday">Yesterday</string>
     <string name="date_header_now">just now</string>

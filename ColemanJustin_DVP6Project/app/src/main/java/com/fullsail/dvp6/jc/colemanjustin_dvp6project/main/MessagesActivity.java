@@ -104,6 +104,15 @@ public class MessagesActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 0x0111 && resultCode == RESULT_OK){
+            // Handle selected images
+        }
+    }
+
+    @Override
     public void onBackPressed() {
         super.onBackPressed();
 
