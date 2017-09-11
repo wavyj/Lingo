@@ -22,6 +22,7 @@ public class Message implements IMessage {
     private String mText;
     private Author mUser;
     private Date mCreatedAt;
+    private String mImageUrl = "";
 
     public Message(UserMessage message){
         mID = String.valueOf(message.getMessageId());
@@ -73,6 +74,14 @@ public class Message implements IMessage {
             return mCreatedAt;
         }
         return new Date();
+    }
+
+    public void setImageUrl(String url){
+        mImageUrl = url;
+    }
+
+    public String getImageUrl(){
+        return mImageUrl;
     }
 
     private void getAdminUser(String adminID){

@@ -38,7 +38,7 @@ public class ImagePickerFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         Matisse.from(getActivity()).choose(MimeType.of(MimeType.GIF, MimeType.PNG, MimeType.JPEG))
                 .countable(true)
-                .maxSelectable(3)
+                .maxSelectable(1)
                 .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
                 .thumbnailScale(0.85f)
                 .spanCount(3)

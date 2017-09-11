@@ -11,6 +11,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
 
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.R;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.fragments.ImagePickerFragment;
@@ -21,6 +23,7 @@ import com.zhihu.matisse.engine.impl.PicassoEngine;
 import java.security.Permission;
 
 public class ImagePickerActivity extends AppCompatActivity {
+    private static final String TAG = "ImagePickerActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +32,7 @@ public class ImagePickerActivity extends AppCompatActivity {
 
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0x0112);
+
     }
 
     @Override
@@ -61,6 +65,12 @@ public class ImagePickerActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -68,7 +78,8 @@ public class ImagePickerActivity extends AppCompatActivity {
             setResult(RESULT_CANCELED);
             finish();
         }else if (requestCode == 0x0111 && resultCode == RESULT_OK){
-
+            setResult(RESULT_OK, data);
+            finish();
         }
     }
 

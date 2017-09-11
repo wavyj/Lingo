@@ -6,12 +6,8 @@ import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.Toolbar;
-import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,10 +25,8 @@ import com.sendbird.android.BaseMessage;
 import com.sendbird.android.FileMessage;
 import com.sendbird.android.GroupChannel;
 import com.sendbird.android.Member;
-import com.sendbird.android.OpenChannel;
 import com.sendbird.android.SendBird;
 import com.sendbird.android.SendBirdException;
-import com.sendbird.android.User;
 import com.sendbird.android.UserMessage;
 import com.squareup.picasso.Picasso;
 import com.stfalcon.chatkit.commons.ImageLoader;
@@ -47,7 +41,8 @@ import java.util.List;
 
 import static com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.TimeUtil.getTimeAgo;
 
-public class MessagingFragment extends Fragment implements MessageInput.AttachmentsListener, Dialog.OnClickListener {
+public class MessagingFragment extends Fragment implements MessageInput.AttachmentsListener,
+        Dialog.OnClickListener, MessagesActivity.onReceivedUploadPath {
 
     public static final String TAG = "MessagingFragment";
 
@@ -56,6 +51,7 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
     private MessagesListAdapter<Message> messagesListAdapter;
     private ImageLoader imageLoader;
     private GroupChannel groupChannel;
+    private String imageUrl;
 
     public static MessagingFragment newInstance(byte[] selection) {
 
@@ -255,5 +251,13 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
         if (requestCode == 0x0111 && resultCode == Activity.RESULT_OK){
 
         }
+    }
+
+
+    // Firebase Storage Upload
+
+    @Override
+    public void onReceived(String url) {
+        imageUrl = url;
     }
 }

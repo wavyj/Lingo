@@ -2,13 +2,12 @@ package com.fullsail.dvp6.jc.colemanjustin_dvp6project.main;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,21 +15,35 @@ import android.view.View;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.R;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.fragments.MembersFragment;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.fragments.MessagingFragment;
+import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.ImageUploader;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.sendbird.android.GroupChannel;
-import com.sendbird.android.Member;
-import com.sendbird.android.SendBird;
 import com.sendbird.android.SendBirdException;
-import com.sendbird.android.User;
+import com.zhihu.matisse.Matisse;
 
-public class MessagesActivity extends AppCompatActivity {
+import java.util.List;
+
+public class MessagesActivity extends AppCompatActivity implements ImageUploader.onImageUploadedListener {
 
     private static final String TAG = "MessagesActivity";
     private static final String CHANNEL = "channel";
     private static final int SEARCHCODE = 0x01010;
 
     private GroupChannel groupChannel;
+    private onReceivedUploadPath mOnReceivedPath;
+    private StorageReference mStorageRef;
 
     public Toolbar mToolbar;
+
+    @Override
+    public void onUploadComplete(String imageUrl) {
+        mOnReceivedPath.onReceived(imageUrl);
+    }
+
+    public interface onReceivedUploadPath{
+        void onReceived(String url);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +75,8 @@ public class MessagesActivity extends AppCompatActivity {
             getFragmentManager().beginTransaction().replace(R.id.content_frame, MessagingFragment.
                     newInstance(groupChannel.serialize()), MessagingFragment.TAG).commit();
         }
+
+        mStorageRef = FirebaseStorage.getInstance().getReference();
     }
 
     @Override
@@ -109,8 +124,15 @@ public class MessagesActivity extends AppCompatActivity {
 
         if (requestCode == 0x0111 && resultCode == RESULT_OK){
             // Handle selected images
+            List<Uri> selected = Matisse.obtainResult(data);
+            //MessagingFragment messagingFragment = (MessagingFragment) getFragmentManager().
+                    //findFragmentByTag(MessagingFragment.TAG);
+
+            ImageUploader imageUploader = new ImageUploader(this, selected.get(0));
+
         }
     }
+
 
     @Override
     public void onBackPressed() {
