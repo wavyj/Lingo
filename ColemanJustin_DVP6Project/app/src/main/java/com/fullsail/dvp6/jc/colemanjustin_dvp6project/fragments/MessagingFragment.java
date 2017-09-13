@@ -3,9 +3,11 @@ package com.fullsail.dvp6.jc.colemanjustin_dvp6project.fragments;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.Fragment;
+import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
@@ -16,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.R;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.main.ImagePickerActivity;
@@ -42,6 +45,7 @@ import com.stfalcon.chatkit.utils.DateFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import static com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.TimeUtil.getTimeAgo;
 
@@ -49,6 +53,8 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
         Dialog.OnClickListener, MessagesActivity.onReceivedUploadPath {
 
     public static final String TAG = "MessagingFragment";
+
+    private static final int SPEECH_CODE = 0x0121;
 
     private MessageInput inputView;
     private MessagesList messagesList;
@@ -249,26 +255,18 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
                 break;
             case 1:
                 // Voice
-                LayoutInflater inflater = LayoutInflater.from(getActivity());
-                final View recordDialog = inflater.inflate(R.layout.record_dialog_layout, null);
-                FloatingActionButton fab = recordDialog.findViewById(R.id.fab);
-                fab.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        TextView tv = recordDialog.findViewById(R.id.promptLabel);
+                Intent speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+                speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+                speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, R.string.voice_prompt);
 
-                        if (isRecording){
-                            tv.setText(R.string.voice_prompt);
-                            isRecording = false;
-                        }else {
-                            tv.setText(R.string.voice_recording);
-                            isRecording = true;
-                        }
-                    }
-                });
-                mDialog = new AlertDialog.Builder(getActivity());
-                mDialog.setView(recordDialog);
-                mDialog.show();
+                try {
+                    startActivityForResult(speechIntent, SPEECH_CODE);
+                } catch (ActivityNotFoundException e){
+                    e.printStackTrace();
+                    Toast.makeText(getActivity(),getString(R.string.voiceunavailable), Toast.LENGTH_SHORT).show();
+                }
+
                 break;
             case 2:
                 // Cancel
@@ -282,6 +280,11 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
 
         if (requestCode == 0x0111 && resultCode == Activity.RESULT_OK){
 
+        }
+
+        if (requestCode == SPEECH_CODE && resultCode == Activity.RESULT_OK && data != null) {
+            ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+            inputView.getInputEditText().setText(result.get(0));
         }
     }
 

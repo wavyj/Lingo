@@ -88,7 +88,7 @@ public class ConversationsActivity extends AppCompatActivity implements View.OnC
             loadConversations();
         }
 
-        //showHideFab();
+        showHideFab();
     }
 
     public void loadConversations(){
