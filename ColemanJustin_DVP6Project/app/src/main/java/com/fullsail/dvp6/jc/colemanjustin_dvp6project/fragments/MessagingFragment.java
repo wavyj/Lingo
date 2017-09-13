@@ -162,7 +162,9 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
                         }
 
                         // Update display
-                        messagesListAdapter.addToStart(m, true);
+                        if (m != null) {
+                            messagesListAdapter.addToStart(m, true);
+                        }
                     }
                 }
             }
@@ -222,17 +224,19 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
                         state = i.getConnectionStatus().toString();
                         Log.d(TAG, state);
                         if (state.equals("OFFLINE")) {
-                            status = "Active: " + TimeUtil.getTimeAgo(getActivity(), new Date(i.getLastSeenAt()));
+                            status = getString(R.string.activeLabel) + " " + TimeUtil.getTimeAgo(getActivity(), new Date(i.getLastSeenAt()));
                         }else if (state.equals("ONLINE")){
-                            status = "Online";
+                            status = getString(R.string.online_status);
                         }else {
-                            status = "Unavailble";
+                            status = getString(R.string.unavailable_status);
                         }
 
                         if (getActivity() instanceof MessagesActivity){
                             // Sets Toolbar title to other user's name
-                            ((MessagesActivity) getActivity()).mToolbar.setTitle(title);
-                            ((MessagesActivity) getActivity()).getSupportActionBar().setSubtitle(status);
+                            if (((MessagesActivity) getActivity()).getSupportActionBar() != null) {
+                                ((MessagesActivity) getActivity()).mToolbar.setTitle(title);
+                                ((MessagesActivity) getActivity()).getSupportActionBar().setSubtitle(status);
+                            }
                         }
                     }
                 }
@@ -297,7 +301,7 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
 
     // Image Message
     private void sendImage(String url, int size){
-        groupChannel.sendFileMessage(url, "Image", "image", 0, "Image", new BaseChannel.SendFileMessageHandler() {
+        groupChannel.sendFileMessage(url, getString(R.string.image_name), "image", 0, getString(R.string.image_name), new BaseChannel.SendFileMessageHandler() {
             @Override
             public void onSent(FileMessage fileMessage, SendBirdException e) {
                 if (e != null){

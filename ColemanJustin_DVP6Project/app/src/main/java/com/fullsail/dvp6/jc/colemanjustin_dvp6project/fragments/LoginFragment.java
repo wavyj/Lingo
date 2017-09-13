@@ -110,9 +110,9 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                     mSavedDisplayname = displaynameInput.getText().toString();
 
                     if (mSavedUsername.equals("") || mSavedUsername.toCharArray().length < 6){
-                        usernameInput.setError("requires at least 6 characters");
+                        usernameInput.setError(getString(R.string.usernameError));
                     } else if (mSavedDisplayname.equals("") || mSavedDisplayname.toCharArray().length < 6){
-                        displaynameInput.setError("requires at least 6 characterst");
+                        displaynameInput.setError(getString(R.string.displaynameError));
                     } else {
                         String displayName = mSavedDisplayname.replaceAll("\\s", "");
 

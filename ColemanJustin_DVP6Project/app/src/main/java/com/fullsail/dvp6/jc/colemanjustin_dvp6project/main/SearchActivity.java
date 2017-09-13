@@ -132,14 +132,14 @@ public class SearchActivity extends AppCompatActivity {
             final User selected = mUsers.get(position);
 
             AlertDialog.Builder builder = new AlertDialog.Builder(SearchActivity.this, R.style.dialog);
-            builder.setTitle("Start Conversation with " + selected.getNickname() + "?");
-            builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            builder.setTitle(getString(R.string.startConvo) + " " + selected.getNickname() + "?");
+            builder.setPositiveButton(R.string.Yes, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     createChat(selected);
                 }
             });
-            builder.setNeutralButton("NO", null);
+            builder.setNeutralButton(R.string.No, null);
             builder.show();
         }
     };
@@ -170,9 +170,9 @@ public class SearchActivity extends AppCompatActivity {
     private void checkEmpty(String query){
         if (mUsers == null || mUsers.size() == 0 ){
             AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.dialog);
-            builder.setTitle("No Results");
-            builder.setMessage("\"" + query + "\"" + " Not Found");
-            builder.setNeutralButton("OK", null);
+            builder.setTitle(R.string.noresults);
+            builder.setMessage("\"" + query + "\"" + " " + getString(R.string.notfound));
+            builder.setNeutralButton(R.string.ok, null);
             builder.show();
         }
     }

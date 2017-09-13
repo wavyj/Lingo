@@ -15,14 +15,14 @@ import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class QueryAdapter extends BaseAdapter{
+ class QueryAdapter extends BaseAdapter{
 
     private static final int ITEM_ID = 0x0001;
 
     private final Context mContext;
     private final ArrayList<User> mUsers;
 
-    public static class ViewHolder{
+    private static class ViewHolder{
         CircleImageView imageView;
         TextView textView;
 
@@ -32,7 +32,7 @@ public class QueryAdapter extends BaseAdapter{
         }
     }
 
-    public QueryAdapter(Context context, ArrayList<User> users){
+    QueryAdapter(Context context, ArrayList<User> users){
         mContext = context;
         mUsers = users;
     }

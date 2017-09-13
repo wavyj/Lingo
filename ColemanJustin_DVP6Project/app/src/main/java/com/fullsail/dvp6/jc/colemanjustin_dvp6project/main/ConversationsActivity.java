@@ -44,7 +44,7 @@ public class ConversationsActivity extends AppCompatActivity implements View.OnC
 
         // Toolbar Setup
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        mToolbar.setTitle("Messages");
+        mToolbar.setTitle(R.string.messages_title);
         mToolbar.setTitleTextColor(ContextCompat.getColor(this, android.R.color.white));
         setSupportActionBar(mToolbar);
 

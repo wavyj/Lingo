@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Login/Signup -->
+    <string name="usernameLabel">Nombre de usuario</string>
+    <string name="displaynameLabel">Nombre para mostrar</string>
+    <string name="loginLabel">Iniciar sesión</string>
+    <string name="signupLabel">Regístrate</string>
+    <string name="signupBtn">Regístrate</string>
+    <string name="loginBtn">Iniciar sesión</string>
+    <string name="noaccount">¿No tienes cuenta aún? Crea uno</string>
+    <string name="haveaccount">¿Tener una cuenta? Iniciar sesión</string>
+    <string name="alertTitle">Inválido</string>
+    <string name="authenticating">Autenticando...</string>
+    <string name="notfound">Extraviado</string>
+    <string name="notfoundMsg">No se encontró ningún usuario con ese nombre de usuario.</string>
+    <string name="ok">DE ACUERDO</string>
+    <string name="exists">No disponible</string>
+    <string name="existsMsg">Este nombre de usuario ya está tomado.</string>
+    <string name="usernameError">Requiere un mínimo de 6 caracteres</string>
+    <string name="displaynameError">Requiere un mínimo de 6 caracteres</string>
+
+    <!-- Conversations -->
+    <string name="messages_title">Mensajes</string>
+    <string name="emptyMessages">Empezar a chatear. Haga clic en "+" para empezar.</string>
+
+    <!-- Search -->
+    <string name="search_hint">Buscar</string>
+    <string name="noresults">No hay resultados</string>
+    <string name="No">NO</string>
+    <string name="Yes">SÍ</string>
+    <string name="startConvo">Iniciar conversación con</string>
+
+    <!-- Messaging -->
+    <string name="inputbar_hint">Introduce un mensaje...</string>
+    <string name="voice_prompt">Di algo agradable</string>
+    <string name="voiceunavailable">Reconocimiento de voz no disponible</string>
+    <string name="permissiontitle">Permiso requerido</string>
+    <string name="permissionmsg">El acceso a su almacenamiento externo es necesario para enviar mensajes de imagen</string>
+    <string name="tryagain">Inténtalo de nuevo</string>
+    <string name="cancel">Cancelar</string>
+    <string name="delete_convo">¿Eliminar la conversación?</string>
+    <string name="image_name">Imagen</string>
+    <string name="activeLabel">Activo:</string>
+    <string name="online_status">En línea</string>
+    <string name="unavailable_status">Indisponible</string>
+    <array name="othermessages">
+        <item>Imagen</item>
+        <item>Voz</item>
+        <item>Cancelar</item>
+    </array>
+
+    <!-- Date Headers -->
+    <string name="date_header_yesterday">Ayer</string>
+    <string name="date_header_now">justo ahora</string>
+    <string name="date_header_minute">hace un minuto</string>
+    <string name="date_header_minutes">hace minutos</string>
+    <string name="date_header_hour">hace una hora</string>
+    <string name="date_header_hours">horas atras</string>
+
+    <!-- Main Menu Titles -->
+    <string name="account">Cuenta</string>
+    <string name="settings">Ajustes</string>
+
+    <!-- Message Menu Titles -->
+    <string name="members">Participantes</string>
+    <string name="search">Buscar</string>
+    <string name="delete">Borrar</string>
+</resources>

@@ -28,11 +28,9 @@ public class MessagesActivity extends AppCompatActivity implements ImageUploader
 
     private static final String TAG = "MessagesActivity";
     private static final String CHANNEL = "channel";
-    private static final int SEARCHCODE = 0x01010;
 
     private GroupChannel groupChannel;
     private onReceivedUploadPath mOnReceivedPath;
-    private StorageReference mStorageRef;
 
     public Toolbar mToolbar;
 
@@ -53,7 +51,7 @@ public class MessagesActivity extends AppCompatActivity implements ImageUploader
         // Toolbar Setup
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mToolbar.setNavigationIcon(R.drawable.back_icon);
-        mToolbar.setTitle("Messages");
+        mToolbar.setTitle(R.string.messages_title);
         mToolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.white));
         mToolbar.setSubtitleTextColor(ContextCompat.getColor(this, R.color.white));
         setSupportActionBar(mToolbar);
@@ -75,8 +73,6 @@ public class MessagesActivity extends AppCompatActivity implements ImageUploader
             getFragmentManager().beginTransaction().replace(R.id.content_frame, MessagingFragment.
                     newInstance(groupChannel.serialize()), MessagingFragment.TAG).commit();
         }
-
-        mStorageRef = FirebaseStorage.getInstance().getReference();
     }
 
     @Override
@@ -99,8 +95,8 @@ public class MessagesActivity extends AppCompatActivity implements ImageUploader
             case R.id.action_delete:
                 // Delete conversation
                 AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.dialog);
-                builder.setTitle("Delete Conversation?");
-                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                builder.setTitle(R.string.delete_convo);
+                builder.setPositiveButton(R.string.Yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         groupChannel.leave(new GroupChannel.GroupChannelLeaveHandler() {
@@ -112,7 +108,7 @@ public class MessagesActivity extends AppCompatActivity implements ImageUploader
                         });
                     }
                 });
-                builder.setNeutralButton("No", null);
+                builder.setNeutralButton(R.string.No, null);
                 builder.show();
         }
         return true;

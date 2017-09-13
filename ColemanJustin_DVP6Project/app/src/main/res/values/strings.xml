@@ -1,42 +1,54 @@
 <resources>
     <string name="app_name">ColemanJustin_DVP6Project</string>
+
+    <!-- Login/Signup -->
     <string name="usernameLabel">Username</string>
     <string name="displaynameLabel">Display Name</string>
     <string name="loginLabel">Login</string>
     <string name="signupLabel">Signup</string>
-    <string name="connectBtn">Connect</string>
     <string name="signupBtn">Signup</string>
     <string name="loginBtn">Login</string>
     <string name="noaccount">No account yet? Create One</string>
     <string name="haveaccount">Have an account? Log in</string>
     <string name="alertTitle">Invalid</string>
-    <string name="drawer_open">Open</string>
-    <string name="drawer_close">Close</string>
-    <string name="emptyMessages">Start Chatting. Click the + to get started.</string>
-    <string name="search_hint">Search</string>
-    <string name="inputbar_hint">Enter a message...</string>
     <string name="authenticating">Authenticating...</string>
-
-    <string name="voice_prompt">Say Something Nice</string>]
-    <string name="voiceunavailable">Speech Recognition Unavailable</string>
-
     <string name="notfound">Not Found</string>
     <string name="notfoundMsg">No user with that username was found.</string>
     <string name="ok">OK</string>
-
     <string name="exists">Not Available</string>
     <string name="existsMsg">Username is already taken.</string>
+    <string name="usernameError">Requires at least 6 characters</string>
+    <string name="displaynameError">Requires at least 6 characters</string>
 
+    <!-- Conversations -->
+    <string name="messages_title">Messages</string>
+    <string name="emptyMessages">Start Chatting. Click the + to get started.</string>
+
+    <!-- Search -->
+    <string name="search_hint">Search</string>
+    <string name="noresults">No Results</string>
+    <string name="No">NO</string>
+    <string name="Yes">YES</string>
+    <string name="startConvo">Start Conversation with</string>
+
+    <!-- Messaging -->
+    <string name="inputbar_hint">Enter a message...</string>
+    <string name="voice_prompt">Say Something Nice</string>]
+    <string name="voiceunavailable">Speech Recognition Unavailable</string>
+    <string name="permissiontitle">Permission Required</string>
+    <string name="permissionmsg">Access to your external storage is required to send image messages.</string>
+    <string name="tryagain">Try Again</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete_convo">Delete Conversation?</string>
+    <string name="image_name">Image</string>
+    <string name="activeLabel">Active:</string>
+    <string name="online_status">Online</string>
+    <string name="unavailable_status">Unavailable</string>
     <array name="othermessages">
         <item>Image</item>
         <item>Voice</item>
         <item>Cancel</item>
     </array>
-
-    <string name="permissiontitle">Permission Required</string>
-    <string name="permissionmsg">Access to your external storage is required to send image messages.</string>
-    <string name="tryagain">Try Again</string>
-    <string name="cancel">Cancel</string>
 
     <!-- Date Headers -->
     <string name="date_header_yesterday">Yesterday</string>
