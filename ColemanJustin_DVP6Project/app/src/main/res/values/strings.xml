@@ -33,7 +33,7 @@
 
     <!-- Messaging -->
     <string name="inputbar_hint">Enter a message...</string>
-    <string name="voice_prompt">Say Something Nice</string>]
+    <string name="voice_prompt">Say Something Nice</string>
     <string name="voiceunavailable">Speech Recognition Unavailable</string>
     <string name="permissiontitle">Permission Required</string>
     <string name="permissionmsg">Access to your external storage is required to send image messages.</string>
