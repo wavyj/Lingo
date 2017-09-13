@@ -1,5 +1,6 @@
 package com.fullsail.dvp6.jc.colemanjustin_dvp6project.fcm;
 
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -102,6 +103,5 @@ public class FirebaseMessageingService extends FirebaseMessagingService {
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
         notificationManager.notify(0x01010, builder.build());
-
     }
 }

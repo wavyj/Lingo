@@ -7,12 +7,15 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.R;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.main.ImagePickerActivity;
@@ -35,7 +38,6 @@ import com.stfalcon.chatkit.messages.MessageInput;
 import com.stfalcon.chatkit.messages.MessagesList;
 import com.stfalcon.chatkit.messages.MessagesListAdapter;
 import com.stfalcon.chatkit.utils.DateFormatter;
-import com.zhihu.matisse.MimeType;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -53,6 +55,8 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
     private MessagesListAdapter<Message> messagesListAdapter;
     private ImageLoader imageLoader;
     private GroupChannel groupChannel;
+    private AlertDialog.Builder mDialog;
+    private boolean isRecording = false;
 
     public static MessagingFragment newInstance(byte[] selection) {
 
@@ -245,6 +249,30 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
                 break;
             case 1:
                 // Voice
+                LayoutInflater inflater = LayoutInflater.from(getActivity());
+                final View recordDialog = inflater.inflate(R.layout.record_dialog_layout, null);
+                FloatingActionButton fab = recordDialog.findViewById(R.id.fab);
+                fab.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        TextView tv = recordDialog.findViewById(R.id.promptLabel);
+
+                        if (isRecording){
+                            tv.setText(R.string.voice_prompt);
+                            isRecording = false;
+                        }else {
+                            tv.setText(R.string.voice_recording);
+                            isRecording = true;
+                        }
+                    }
+                });
+                mDialog = new AlertDialog.Builder(getActivity());
+                mDialog.setView(recordDialog);
+                mDialog.show();
+                break;
+            case 2:
+                // Cancel
+                dialog.dismiss();
         }
     }
 

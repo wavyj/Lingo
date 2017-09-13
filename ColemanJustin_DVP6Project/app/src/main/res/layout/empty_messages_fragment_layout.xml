@@ -20,5 +20,6 @@
         android:text="@string/emptyMessages"
         android:textAlignment="center"
         android:textSize="17sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:padding="16dp"/>
 </LinearLayout>

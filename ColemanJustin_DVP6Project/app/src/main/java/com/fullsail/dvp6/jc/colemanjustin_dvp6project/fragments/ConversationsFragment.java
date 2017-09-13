@@ -61,6 +61,12 @@ public class ConversationsFragment extends Fragment implements DialogsListAdapte
         super.onActivityCreated(savedInstanceState);
 
         ArrayList<byte[]> channelsdata = (ArrayList<byte[]>) getArguments().getSerializable("CHANNELS");
+        if (channelsdata == null){
+            if (getActivity() instanceof  ConversationsActivity){
+                ((ConversationsActivity) getActivity()).loadConversations();
+                return;
+            }
+        }
         ArrayList<GroupChannel> channels = new ArrayList<>();
         for (byte[] i: channelsdata){
             channels.add((GroupChannel) GroupChannel.buildFromSerializedData(i));

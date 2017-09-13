@@ -98,7 +98,7 @@ public class MessagesActivity extends AppCompatActivity implements ImageUploader
                 break;
             case R.id.action_delete:
                 // Delete conversation
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.dialog);
                 builder.setTitle("Delete Conversation?");
                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override

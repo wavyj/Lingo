@@ -17,6 +17,8 @@
     <string name="inputbar_hint">Enter a message...</string>
     <string name="authenticating">Authenticating...</string>
 
+    <string name="voice_prompt">Say Something Nice</string>
+    <string name="voice_recording">Recording...</string>
 
     <string name="notfound">Not Found</string>
     <string name="notfoundMsg">No user with that username was found.</string>
@@ -28,6 +30,7 @@
     <array name="othermessages">
         <item>Image</item>
         <item>Voice</item>
+        <item>Cancel</item>
     </array>
 
     <string name="permissiontitle">Permission Required</string>

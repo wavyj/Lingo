@@ -28,5 +28,6 @@
         android:layout_alignParentBottom="true"
         app:inputHint="@string/inputbar_hint"
         app:showAttachmentButton="true"
+        android:elevation="5dp"
         />
 </RelativeLayout>
