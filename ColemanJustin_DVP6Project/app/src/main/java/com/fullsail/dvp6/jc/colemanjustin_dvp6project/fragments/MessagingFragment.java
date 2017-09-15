@@ -6,6 +6,7 @@ import android.app.Fragment;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.annotation.Nullable;
@@ -23,8 +24,10 @@ import android.widget.Toast;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.R;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.main.ImagePickerActivity;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.main.MessagesActivity;
+import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.Author;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.ImageMessage;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.Message;
+import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.MessagesDatabaseSQLHelper;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.TimeUtil;
 import com.sendbird.android.AdminMessage;
 import com.sendbird.android.BaseChannel;
@@ -32,6 +35,7 @@ import com.sendbird.android.BaseMessage;
 import com.sendbird.android.FileMessage;
 import com.sendbird.android.GroupChannel;
 import com.sendbird.android.Member;
+import com.sendbird.android.MessageListQuery;
 import com.sendbird.android.SendBird;
 import com.sendbird.android.SendBirdException;
 import com.sendbird.android.UserMessage;
@@ -58,16 +62,15 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
 
     private MessageInput inputView;
     private MessagesList messagesList;
+    private ArrayList<Message> loadedMessages;
     private MessagesListAdapter<Message> messagesListAdapter;
     private ImageLoader imageLoader;
     private GroupChannel groupChannel;
-    private AlertDialog.Builder mDialog;
-    private boolean isRecording = false;
 
-    public static MessagingFragment newInstance(byte[] selection) {
+    public static MessagingFragment newInstance(String selection) {
 
         Bundle args = new Bundle();
-        args.putByteArray("SELECTED", selection);
+        args.putString("SELECTED", selection);
 
         MessagingFragment fragment = new MessagingFragment();
         fragment.setArguments(args);
@@ -84,8 +87,22 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        byte[] selection = getArguments().getByteArray("SELECTED");
-        groupChannel = (GroupChannel) GroupChannel.buildFromSerializedData(selection);
+        String selection = getArguments().getString("SELECTED");
+        getChannel(selection);
+    }
+
+    private void getChannel(String url){
+        GroupChannel.getChannel(url, new GroupChannel.GroupChannelGetHandler() {
+            @Override
+            public void onResult(GroupChannel channel, SendBirdException e) {
+                groupChannel = channel;
+                messagingSetup();
+            }
+        });
+    }
+
+    private void messagingSetup(){
+
         setTitle();
 
         // MessageInput Setup
@@ -169,34 +186,82 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
                 }
             }
         });
-
     }
 
     private void getMessages(final GroupChannel groupChannel){
-        groupChannel.getPreviousMessagesByTimestamp(Long.MAX_VALUE, false, 100, true, BaseChannel.
+        loadedMessages = new ArrayList<>();
+
+        // Load Messages from SQL database
+        MessagesDatabaseSQLHelper db = MessagesDatabaseSQLHelper.getInsance(getActivity());
+        Cursor c = db.query(groupChannel.getUrl());
+        while (c.moveToNext()){
+            String id = c.getString(c.getColumnIndex(MessagesDatabaseSQLHelper.COLUMN_ID));
+            String text = c.getString(c.getColumnIndex(MessagesDatabaseSQLHelper.COLUMN_TEXT));
+            long time = c.getLong(c.getColumnIndex(MessagesDatabaseSQLHelper.COLUMN_TIME));
+            String senderID = c.getString(c.getColumnIndex(MessagesDatabaseSQLHelper.COLUMN_SENDER));
+            String type = c.getString(c.getColumnIndex(MessagesDatabaseSQLHelper.COLUMN_TYPE));
+
+            Author a;
+            if (senderID.equals(groupChannel.getMembers().get(0).getUserId())){
+                a = new Author(groupChannel.getMembers().get(0));
+            } else {
+                a = new Author(groupChannel.getMembers().get(1));
+            }
+            Message m;
+
+            if (type.equals("Text")) {
+                m = new Message(id, a, text, new Date(time));
+
+            }else {
+                String imageUrl = c.getString(c.getColumnIndex(MessagesDatabaseSQLHelper.COLUMN_IMAGE));
+
+                m = new ImageMessage(id, text, a, new Date(time), imageUrl);
+            }
+
+            loadedMessages.add(m);
+            Log.d(TAG, String.valueOf(c.getCount()));
+        }
+        c.close();
+
+        long lastCachedMessage = Long.MAX_VALUE;
+
+        // Add cached Messages
+        if (loadedMessages != null && loadedMessages.size() > 1) {
+            messagesListAdapter.addToEnd(loadedMessages, false);
+
+            // Get the time of the last cached message
+            lastCachedMessage = loadedMessages.get(0).getCreatedAt().getTime();
+            Log.d(TAG, loadedMessages.get(0).getText());
+        }
+
+        // Get the latest messages that are not cached
+        groupChannel.getNextMessagesByTimestamp(lastCachedMessage, false, 60, false, BaseChannel.
                 MessageTypeFilter.ALL, null, new BaseChannel.GetMessagesHandler() {
             @Override
             public void onResult(List<BaseMessage> list, SendBirdException e) {
-                ArrayList<Message> messages = new ArrayList<Message>();
+                //ArrayList<Message> messages = new ArrayList<Message>();
                 for (BaseMessage i: list){
                     if (i instanceof UserMessage){
                         UserMessage msg = (UserMessage) UserMessage.buildFromSerializedData(i.serialize());
                         Message m = new Message(msg);
-                        messages.add(m);
+                        //messages.add(m);
 
-                    }else if (i instanceof AdminMessage){
-                        /*AdminMessage msg = (AdminMessage) AdminMessage.buildFromSerializedData(i.serialize());
-                        Message m = new Message(msg);
-                        messages.add(m);*/
+                        messagesListAdapter.addToStart(m, true);
+
+                        // Cache message into sql database
+                        MessagesDatabaseSQLHelper.getInsance(getActivity()).insertMessage(m, groupChannel.getUrl());
 
                     }else if (i instanceof FileMessage){
                         FileMessage msg = (FileMessage) FileMessage.buildFromSerializedData(i.serialize());
                         ImageMessage m = new ImageMessage(msg);
-                        messages.add(m);
+                        //messages.add(m);
+
+                        messagesListAdapter.addToStart(m, true);
+
+                        // Cache message into sql database
+                        MessagesDatabaseSQLHelper.getInsance(getActivity()).insertMessage(m, groupChannel.getUrl());
                     }
                 }
-
-                messagesListAdapter.addToEnd(messages, false);
 
                 // Set messages read
                 groupChannel.markAsRead();

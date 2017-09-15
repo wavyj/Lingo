@@ -19,6 +19,7 @@ import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.ImageUploader;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.sendbird.android.GroupChannel;
+import com.sendbird.android.SendBird;
 import com.sendbird.android.SendBirdException;
 import com.zhihu.matisse.Matisse;
 
@@ -71,7 +72,7 @@ public class MessagesActivity extends AppCompatActivity implements ImageUploader
             mToolbar.setTitle("");
             // Messages Fragment
             getFragmentManager().beginTransaction().replace(R.id.content_frame, MessagingFragment.
-                    newInstance(groupChannel.serialize()), MessagingFragment.TAG).commit();
+                    newInstance(groupChannel.getUrl()), MessagingFragment.TAG).commit();
         }
     }
 

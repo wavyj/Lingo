@@ -16,6 +16,7 @@ import com.fullsail.dvp6.jc.colemanjustin_dvp6project.main.MessagesActivity;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.Dialog;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.DialogsUtil;
 import com.sendbird.android.GroupChannel;
+import com.sendbird.android.SendBirdException;
 import com.squareup.picasso.Picasso;
 import com.stfalcon.chatkit.commons.ImageLoader;
 import com.stfalcon.chatkit.commons.models.IDialog;
@@ -37,13 +38,15 @@ public class ConversationsFragment extends Fragment implements DialogsListAdapte
     private DialogsList dialogsList;
     private DialogsListAdapter dialogsListAdapter;
     private ImageLoader imageLoader;
+    private ArrayList<GroupChannel> mChannels;
+    private boolean isLast = false;
 
     private ArrayList<Dialog> dialogs;
 
-    public static ConversationsFragment newInstance(ArrayList<byte[]> channels) {
+    public static ConversationsFragment newInstance(ArrayList<String> channels) {
 
         Bundle args = new Bundle();
-        args.putSerializable("CHANNELS", channels);
+        args.putStringArrayList("CHANNELS", channels);
 
         ConversationsFragment fragment = new ConversationsFragment();
         fragment.setArguments(args);
@@ -60,18 +63,25 @@ public class ConversationsFragment extends Fragment implements DialogsListAdapte
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        ArrayList<byte[]> channelsdata = (ArrayList<byte[]>) getArguments().getSerializable("CHANNELS");
+        ArrayList<String> channelsdata = getArguments().getStringArrayList("CHANNELS");
         if (channelsdata == null){
             if (getActivity() instanceof  ConversationsActivity){
                 ((ConversationsActivity) getActivity()).loadConversations();
                 return;
             }
         }
-        ArrayList<GroupChannel> channels = new ArrayList<>();
-        for (byte[] i: channelsdata){
-            channels.add((GroupChannel) GroupChannel.buildFromSerializedData(i));
-        }
 
+        mChannels = new ArrayList<>();
+
+        for (int i = 0; i < channelsdata.size(); i++){
+            if (i == channelsdata.size() - 1){
+                isLast = true;
+            }
+            loadChannel(channelsdata.get(i));
+        }
+    }
+
+    private void dialogSetup(){
         dialogsList = (DialogsList) getView().findViewById(R.id.dialogsList);
         imageLoader = new ImageLoader() {
             @Override
@@ -86,7 +96,7 @@ public class ConversationsFragment extends Fragment implements DialogsListAdapte
         dialogsListAdapter = new DialogsListAdapter<>(imageLoader);
 
         // Create Dialog from each channel
-        dialogs = DialogsUtil.getDialogs(channels);
+        dialogs = DialogsUtil.getDialogs(mChannels);
 
         // Set adapter items
         dialogsListAdapter.setItems(dialogs);
@@ -121,5 +131,23 @@ public class ConversationsFragment extends Fragment implements DialogsListAdapte
         Intent messageIntent = new Intent(getActivity(), MessagesActivity.class);
         messageIntent.putExtra("channel", current.getGroupChannel().serialize());
         getActivity().startActivityForResult(messageIntent, MESSAGING);
+    }
+
+    private void loadChannel(String url){
+        GroupChannel.getChannel(url, new GroupChannel.GroupChannelGetHandler() {
+            @Override
+            public void onResult(GroupChannel groupChannel, SendBirdException e) {
+                if (e != null){
+                    // Error
+                    e.printStackTrace();
+                }
+
+                mChannels.add(groupChannel);
+
+                if (isLast){
+                    dialogSetup();
+                }
+            }
+        });
     }
 }

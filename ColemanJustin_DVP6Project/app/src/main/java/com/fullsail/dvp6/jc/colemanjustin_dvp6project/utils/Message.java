@@ -49,9 +49,8 @@ public class Message implements IMessage {
     public Message(AdminMessage adminMessage){
         mID = String.valueOf(adminMessage.getMessageId());
         mText = adminMessage.getMessage();
-        String adminID = adminMessage.getData();
+        //String adminID = adminMessage.getData();
         mCreatedAt = new Date(adminMessage.getCreatedAt());
-        getAdminUser(adminID);
     }
 
     public Message(FileMessage fileMessage){
@@ -82,25 +81,5 @@ public class Message implements IMessage {
             return mCreatedAt;
         }
         return new Date();
-    }
-
-    private void getAdminUser(String adminID){
-        List<String> userIDs = new ArrayList<>();
-        userIDs.add(adminID);
-        UserListQuery userListQuery = SendBird.createUserListQuery(userIDs);
-
-        userListQuery.next(new UserListQuery.UserListQueryResultHandler() {
-            @Override
-            public void onResult(List<User> list, SendBirdException e) {
-                if (e != null){
-                    // Error
-                    e.printStackTrace();
-                }
-
-                if (list.size() > 0) {
-                    mUser = new Author(list.get(0));
-                }
-            }
-        });
     }
 }

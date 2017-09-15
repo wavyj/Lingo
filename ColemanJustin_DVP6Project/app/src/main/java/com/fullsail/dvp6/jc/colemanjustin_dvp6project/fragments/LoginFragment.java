@@ -159,7 +159,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                             PreferencesUtil.setPassword(getActivity(), password);
 
                             PreferencesUtil.setConnected(getActivity(), true);
-                            PreferencesUtil.updateUsername(password);
+                            PreferencesUtil.updateUsername(username);
                             PreferencesUtil.updateUserToken();
 
                             Intent conversationsIntent = new Intent(getActivity(), ConversationsActivity.class);

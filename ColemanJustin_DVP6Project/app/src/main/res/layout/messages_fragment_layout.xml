@@ -9,9 +9,26 @@
         android:id="@+id/messagesList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/input"
+        android:layout_above="@+id/typingStatus"
         app:incomingTextLinkColor="@color/blue"
         app:outcomingTextLinkColor="@color/blue"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/typingStatus"
+        android:layout_above="@+id/input">
+
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/typingLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="You are typing..."
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="5dp" />
+    </LinearLayout>
 
     <View
         android:layout_width="match_parent"

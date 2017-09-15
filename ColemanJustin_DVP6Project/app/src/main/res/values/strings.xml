@@ -19,7 +19,7 @@
     <string name="incorrectpasswordMsg">That password was incorrect. Try resetting your password.</string>
     <string name="ok">OK</string>
     <string name="exists">Not Available</string>
-    <string name="existsMsg">Username is already taken.</string>
+    <string name="existsMsg">An account with that email already exists.</string>
     <string name="emailError">Not a valid email address e.g. example@email.com</string>
     <string name="usernameError">Requires at least 6 characters</string>
 

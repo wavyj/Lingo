@@ -39,8 +39,7 @@ public class ImageUploader{
 
     public ImageUploader(onImageUploadedListener uploadedListener, Uri path){
         mUploadListener = uploadedListener;
-        mAuth = FirebaseAuth.getInstance();
-        signInAnon(path);
+        uploadImage(path);
         mStorageRef = FirebaseStorage.getInstance().getReferenceFromUrl("gs://dvp6-project.appspot.com/");
     }
 
@@ -96,14 +95,4 @@ public class ImageUploader{
         return mImageUrl;
     }
 
-    private void signInAnon(final Uri path){
-        mAuth.signInAnonymously().addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()){
-                    uploadImage(path);
-                }
-            }
-        });
-    }
 }

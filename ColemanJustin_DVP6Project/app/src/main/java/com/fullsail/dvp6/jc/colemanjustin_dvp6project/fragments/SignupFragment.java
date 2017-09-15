@@ -150,21 +150,21 @@ public class SignupFragment extends Fragment implements View.OnClickListener{
                                     getActivity().finish();
                                 }
                             });
-                        } else {
-                            // dismiss progress
-                            mProgress.cancel();
-
-                            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.dialog);
-                            builder.setTitle(R.string.exists);
-                            builder.setMessage(R.string.existsMsg);
-                            builder.setNeutralButton(R.string.ok, null);
-                            builder.show();
                         }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 e.printStackTrace();
+
+                // dismiss progress
+                mProgress.cancel();
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.dialog);
+                builder.setTitle(R.string.exists);
+                builder.setMessage(R.string.existsMsg);
+                builder.setNeutralButton(R.string.ok, null);
+                builder.show();
             }
         });
     }

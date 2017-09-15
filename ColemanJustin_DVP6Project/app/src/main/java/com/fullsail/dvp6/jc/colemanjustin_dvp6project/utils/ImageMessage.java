@@ -23,6 +23,15 @@ public class ImageMessage extends Message implements MessageContentType.Image{
         mUser = new Author(fileMessage.getSender());
     }
 
+    public ImageMessage(String id, String text, Author a, Date date, String imageUrl){
+        super(id, a, text, date);
+        mID = id;
+        mText = text;
+        mUser = a;
+        mCreatedAt = date;
+        mImageUrl = imageUrl;
+    }
+
     public void setImageUrl(String url){
         mImageUrl = url;
     }

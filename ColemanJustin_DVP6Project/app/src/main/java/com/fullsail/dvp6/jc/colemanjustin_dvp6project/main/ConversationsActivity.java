@@ -29,7 +29,7 @@ public class ConversationsActivity extends AppCompatActivity implements View.OnC
     private static final String TAG = "ConversationsActivity";
     private static final int SEARCHCODE = 0x01010;
 
-    private ArrayList<byte[]> mConversations;
+    private ArrayList<String> mConversations;
     private Boolean returningResults = true;
 
     @Override
@@ -137,7 +137,7 @@ public class ConversationsActivity extends AppCompatActivity implements View.OnC
                 // Add each channel to conversations arrayList
                 for (GroupChannel i: list){
                     if (i.getMembers().size() > 1) {
-                        mConversations.add(i.serialize());
+                        mConversations.add(i.getUrl());
                     }
                 }
 
@@ -158,14 +158,14 @@ public class ConversationsActivity extends AppCompatActivity implements View.OnC
             @Override
             public void onMessageReceived(BaseChannel baseChannel, BaseMessage baseMessage) {
                 // Refresh
-                loadConversations();
+                //loadConversations();
             }
 
             @Override
             public void onChannelDeleted(String channelUrl, BaseChannel.ChannelType channelType) {
                 super.onChannelDeleted(channelUrl, channelType);
                 // Refresh
-                loadConversations();
+                //loadConversations();
             }
         });
     }
