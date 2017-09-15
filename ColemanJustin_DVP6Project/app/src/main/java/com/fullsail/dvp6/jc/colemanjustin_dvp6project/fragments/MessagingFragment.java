@@ -292,7 +292,6 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
         }
     }
 
-
     // Firebase Storage Upload
     @Override
     public void onReceived(String url, int size) {

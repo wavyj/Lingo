@@ -13,8 +13,9 @@ import com.sendbird.android.SendBirdException;
 
 public class PreferencesUtil {
 
-    public static final String USER_ID = "userID";
-    public static final String DISPLAYNAME = "displayName";
+    public static final String EMAIL = "email";
+    public static final String USERNAME = "username";
+    public static final String PASSWORD = "password";
     public static final String CONNECTED = "connected";
 
     private PreferencesUtil(){
@@ -25,22 +26,31 @@ public class PreferencesUtil {
         return context.getSharedPreferences("sendbird", Context.MODE_PRIVATE);
     }
 
-    public static void setUserId(Context context, String userId){
+    public static void setEmail(Context context, String email){
         SharedPreferences.Editor editor = getSharedPreferences(context).edit();
-        editor.putString(USER_ID, userId).apply();
+        editor.putString(EMAIL, email).apply();
     }
 
-    public static String getUserId(Context context){
-        return getSharedPreferences(context).getString(USER_ID, "");
+    public static String getEmail(Context context){
+        return getSharedPreferences(context).getString(EMAIL, "");
     }
 
-    public static void setDisplayName(Context context, String displayName){
+    public static void setPassword(Context context, String password){
         SharedPreferences.Editor editor = getSharedPreferences(context).edit();
-        editor.putString(DISPLAYNAME, displayName).apply();
+        editor.putString(PASSWORD, password).apply();
     }
 
-    public static String getDisplayName(Context context){
-        return getSharedPreferences(context).getString(DISPLAYNAME, "");
+    public static String getPassword(Context context){
+        return getSharedPreferences(context).getString(PASSWORD, "");
+    }
+
+    public static void setUsername(Context context, String username){
+        SharedPreferences.Editor editor = getSharedPreferences(context).edit();
+        editor.putString(USERNAME, username).apply();
+    }
+
+    public static String getUsername(Context context){
+        return getSharedPreferences(context).getString(USERNAME, "");
     }
 
     public static void setConnected(Context context, boolean status){
@@ -57,8 +67,8 @@ public class PreferencesUtil {
         editor.clear().apply();
     }
 
-    public static void updateDisplayName(String displayName){
-        SendBird.updateCurrentUserInfo(displayName, null, new SendBird.UserInfoUpdateHandler() {
+    public static void updateUsername(String username){
+        SendBird.updateCurrentUserInfo(username, null, new SendBird.UserInfoUpdateHandler() {
             @Override
             public void onUpdated(SendBirdException e) {
                 if (e != null){

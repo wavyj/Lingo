@@ -2,8 +2,9 @@
     <string name="app_name">ColemanJustin_DVP6Project</string>
 
     <!-- Login/Signup -->
+    <string name="emailLabel">Email</string>
     <string name="usernameLabel">Username</string>
-    <string name="displaynameLabel">Display Name</string>
+    <string name="passwordLabel">Password</string>
     <string name="loginLabel">Login</string>
     <string name="signupLabel">Signup</string>
     <string name="signupBtn">Signup</string>
@@ -13,12 +14,14 @@
     <string name="alertTitle">Invalid</string>
     <string name="authenticating">Authenticating...</string>
     <string name="notfound">Not Found</string>
-    <string name="notfoundMsg">No user with that username was found.</string>
+    <string name="notfoundMsg">No user with that email was found.</string>
+    <string name="incorrectpassword">Incorrect Password</string>
+    <string name="incorrectpasswordMsg">That password was incorrect. Try resetting your password.</string>
     <string name="ok">OK</string>
     <string name="exists">Not Available</string>
     <string name="existsMsg">Username is already taken.</string>
+    <string name="emailError">Not a valid email address e.g. example@email.com</string>
     <string name="usernameError">Requires at least 6 characters</string>
-    <string name="displaynameError">Requires at least 6 characters</string>
 
     <!-- Conversations -->
     <string name="messages_title">Messages</string>

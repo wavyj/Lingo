@@ -24,6 +24,17 @@
                 android:transitionName="@string/logo"/>
 
                 <EditText
+                    android:id="@+id/emailInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:hint="@string/emailLabel"
+                    android:inputType="textEmailAddress"
+                    android:textColor="@color/white"
+
+                    android:layout_marginBottom="24dp"/>
+
+                <EditText
                     android:id="@+id/usernameInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -35,13 +46,13 @@
                     android:layout_marginBottom="24dp"/>
 
                 <EditText
-                    android:id="@+id/displaynameInput"
+                    android:id="@+id/passwordInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
                     android:ems="10"
-                    android:hint="@string/displaynameLabel"
-                    android:inputType="textPersonName"
+                    android:hint="@string/passwordLabel"
+                    android:inputType="textPassword"
                     android:textColor="@color/white"
                     android:transitionName="@string/displayname"/>
 
@@ -60,6 +71,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
+                android:padding="16dp"
                 android:gravity="center"
                 android:text="@string/haveaccount"
                 android:textColor="@color/gray"

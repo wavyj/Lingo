@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
@@ -15,8 +16,16 @@ import android.widget.TextView;
 
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.R;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.main.ConversationsActivity;
-import com.fullsail.dvp6.jc.colemanjustin_dvp6project.main.LoginActivity;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.PreferencesUtil;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
+import com.google.firebase.auth.FirebaseUser;
 import com.sendbird.android.SendBird;
 import com.sendbird.android.SendBirdException;
 import com.sendbird.android.User;
@@ -31,8 +40,9 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
     private static toSignUpListener mSignUpListener;
 
-    private String mSavedUsername;
-    private String mSavedDisplayname;
+    private FirebaseAuth mAuth;
+    private String mSavedEmail;
+    //private String mSavedDisplayname;
     private ProgressDialog mProgress;
 
     public interface toSignUpListener{
@@ -54,16 +64,10 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        if (mSavedUsername != null){
-            outState.putString("username", mSavedUsername);
+        if (mSavedEmail != null){
+            outState.putString("email", mSavedEmail);
 
-            mSavedUsername = null;
-        }
-
-        if (mSavedDisplayname != null){
-            outState.putString("displayname", mSavedDisplayname);
-
-            mSavedDisplayname = null;
+            mSavedEmail = null;
         }
     }
 
@@ -72,13 +76,10 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         super.onViewStateRestored(savedInstanceState);
 
         if (savedInstanceState != null) {
-            if (savedInstanceState.getString("username") != null) {
-                mSavedUsername = savedInstanceState.getString("username");
+            if (savedInstanceState.getString("email") != null) {
+                mSavedEmail = savedInstanceState.getString("email");
             }
 
-            if (savedInstanceState.getString("displayname") != null) {
-                mSavedDisplayname = savedInstanceState.getString("displayname");
-            }
         }
     }
 
@@ -91,6 +92,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        mAuth = FirebaseAuth.getInstance();
         TextView signupLink = (TextView) getView().findViewById(R.id.toSignupLink);
         signupLink.setOnClickListener(this);
         Button connectBtn = (Button) getView().findViewById(R.id.connectBtn);
@@ -103,20 +105,20 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             case R.id.connectBtn:
                 if (getView() != null) {
                     // Login
-                    EditText usernameInput = (EditText) getView().findViewById(R.id.usernameInput);
-                    EditText displaynameInput = (EditText) getView().findViewById(R.id.displaynameInput);
+                    EditText usernameInput = (EditText) getView().findViewById(R.id.emailInput);
+                    EditText passwordInput = (EditText) getView().findViewById(R.id.passwordInput);
 
-                    mSavedUsername = usernameInput.getText().toString();
-                    mSavedDisplayname = displaynameInput.getText().toString();
+                    mSavedEmail = usernameInput.getText().toString();
+                    String password = passwordInput.getText().toString();
 
-                    if (mSavedUsername.equals("") || mSavedUsername.toCharArray().length < 6){
-                        usernameInput.setError(getString(R.string.usernameError));
-                    } else if (mSavedDisplayname.equals("") || mSavedDisplayname.toCharArray().length < 6){
-                        displaynameInput.setError(getString(R.string.displaynameError));
+                    if (mSavedEmail.equals("") || mSavedEmail.toCharArray().length < 6){
+                        usernameInput.setError(getString(R.string.emailError));
+                    } else if (password.equals("") || password.toCharArray().length < 6){
+                        passwordInput.setError(getString(R.string.usernameError));
                     } else {
-                        String displayName = mSavedDisplayname.replaceAll("\\s", "");
+                        password = password.replaceAll("\\s", "");
 
-                        loginUser(mSavedUsername, displayName);
+                        loginUser(mSavedEmail, password);
                     }
                 }
                 break;
@@ -125,28 +127,18 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void loginUser(final String username, final String displayName){
+    private void loginUser(final String email, final String password){
         mProgress = new ProgressDialog(getActivity(), R.style.dialog);
         mProgress.setIndeterminate(true);
         mProgress.setMessage(getString(R.string.authenticating));
         mProgress.show();
-        List<String> ids = new ArrayList<>();
-        ids.add(username);
 
-        // Search for existing user
-        UserListQuery userListQuery = SendBird.createUserListQuery(ids);
-        userListQuery.next(new UserListQuery.UserListQueryResultHandler() {
+        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
-            public void onResult(List<User> list, SendBirdException e) {
-                if (e != null){
-                    // Error
-                    e.printStackTrace();
-                }
-
-                // Hide progress dialog
-                mProgress.cancel();
-
-                if (list != null && list.size() > 0){
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()){
+                    FirebaseUser user = mAuth.getCurrentUser();
+                    final String username = user.getDisplayName();
                     // Login user
                     SendBird.connect(username, new SendBird.ConnectHandler() {
                         @Override
@@ -159,11 +151,15 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                                 return;
                             }
 
-                            PreferencesUtil.setUserId(getActivity(), mSavedUsername);
-                            PreferencesUtil.setDisplayName(getActivity(), displayName);
+                            // Hide progress dialog
+                            mProgress.cancel();
+
+                            PreferencesUtil.setEmail(getActivity(), email);
+                            PreferencesUtil.setUsername(getActivity(), username);
+                            PreferencesUtil.setPassword(getActivity(), password);
 
                             PreferencesUtil.setConnected(getActivity(), true);
-                            PreferencesUtil.updateDisplayName(displayName);
+                            PreferencesUtil.updateUsername(password);
                             PreferencesUtil.updateUserToken();
 
                             Intent conversationsIntent = new Intent(getActivity(), ConversationsActivity.class);
@@ -171,13 +167,27 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                             getActivity().finish();
                         }
                     });
-                } else {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.dialog);
+                }
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                e.printStackTrace();
+
+                // Hide progress dialog
+                mProgress.cancel();
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.dialog);
+                if (e.getMessage().contains("no user")) {
                     builder.setTitle(R.string.notfound);
                     builder.setMessage(R.string.notfoundMsg);
-                    builder.setNeutralButton(R.string.ok, null);
-                    builder.show();
+                }else if (e.getMessage().contains("password is invalid")){
+                    builder.setTitle(R.string.incorrectpassword);
+                    builder.setMessage(R.string.incorrectpasswordMsg);
                 }
+                builder.setNeutralButton(R.string.ok, null);
+                builder.show();
             }
         });
 

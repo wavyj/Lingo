@@ -69,8 +69,7 @@ public class SearchActivity extends AppCompatActivity {
                         ArrayList<User> userList = new ArrayList<User>();
                         for (User i: list){
                             // Only get users other than the current user
-                            if (!i.getUserId().equals(SendBird.getCurrentUser().getUserId()) &&
-                                    !i.getUserId().equals("bot")) {
+                            if (!i.getUserId().equals(SendBird.getCurrentUser().getUserId())) {
                                 if (i.getNickname().contains(query)) {
                                     userList.add(i);
                                 }

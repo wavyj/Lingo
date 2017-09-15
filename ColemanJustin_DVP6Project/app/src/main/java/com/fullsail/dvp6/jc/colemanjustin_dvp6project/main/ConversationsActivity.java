@@ -13,6 +13,7 @@ import android.view.View;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.R;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.fragments.ConversationsFragment;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.fragments.EmptyMessagesFragment;
+import com.fullsail.dvp6.jc.colemanjustin_dvp6project.fragments.MessagingFragment;
 import com.sendbird.android.BaseChannel;
 import com.sendbird.android.BaseMessage;
 import com.sendbird.android.GroupChannel;
@@ -29,7 +30,7 @@ public class ConversationsActivity extends AppCompatActivity implements View.OnC
     private static final int SEARCHCODE = 0x01010;
 
     private ArrayList<byte[]> mConversations;
-    private Boolean isLoading;
+    private Boolean returningResults = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +63,18 @@ public class ConversationsActivity extends AppCompatActivity implements View.OnC
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        handleEvents();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        SendBird.removeAllChannelHandlers();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         SendBird.removeAllChannelHandlers();
@@ -85,14 +98,25 @@ public class ConversationsActivity extends AppCompatActivity implements View.OnC
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK){
-            loadConversations();
+            returningResults = true;
+        } else{
+            returningResults = false;
         }
 
         showHideFab();
     }
 
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        // Fragment Transactions after Activity has been restored preventing state losssssssss
+        if (returningResults){
+            loadConversations();
+        }
+    }
+
     public void loadConversations(){
-        isLoading = true;
+
         List<String> ids = new ArrayList<>();
         ids.add(SendBird.getCurrentUser().getUserId());
 
@@ -125,7 +149,6 @@ public class ConversationsActivity extends AppCompatActivity implements View.OnC
                     getFragmentManager().beginTransaction().replace(R.id.content_frame,
                             EmptyMessagesFragment.newInstance(), EmptyMessagesFragment.TAG).commit();
                 }
-                isLoading = false;
             }
         });
     }

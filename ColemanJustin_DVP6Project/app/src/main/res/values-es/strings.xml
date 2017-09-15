@@ -17,8 +17,8 @@
     <string name="ok">DE ACUERDO</string>
     <string name="exists">No disponible</string>
     <string name="existsMsg">Este nombre de usuario ya está tomado.</string>
+    <string name="emailError">Requiere un mínimo de 6 caracteres</string>
     <string name="usernameError">Requiere un mínimo de 6 caracteres</string>
-    <string name="displaynameError">Requiere un mínimo de 6 caracteres</string>
 
     <!-- Conversations -->
     <string name="messages_title">Mensajes</string>

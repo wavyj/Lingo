@@ -2,6 +2,7 @@
 <resources>
 
     <!-- Login/Signup -->
+    <!--
     <string name="usernameLabel">Nom d\'utilisateur</string>
     <string name="displaynameLabel">Afficher un nom</string>
     <string name="loginLabel">S\'identifier</string>
@@ -17,8 +18,8 @@
     <string name="ok">D\'accord</string>
     <string name="exists">Indisponible</string>
     <string name="existsMsg">Nom d\'utilisateur déjà pris.</string>
-    <string name="usernameError">Nécessite au moins 6 caractères</string>
-    <string name="displaynameError">Nécessite au moins 6 caractères</string>
+    <string name="emailError">Nécessite au moins 6 caractères</string>
+    <string name="usernameError">Nécessite au moins 6 caractères</string> -->
 
     <!-- Conversations -->
     <string name="messages_title">Messages</string>
@@ -32,6 +33,7 @@
     <string name="startConvo">Commence la conversation avec</string>
 
     <!-- Messaging -->
+    <!--
     <string name="inputbar_hint">Entrez un message...</string>
     <string name="voice_prompt">Dis quelque chose de gentil</string>
     <string name="voiceunavailable">Reconnaissance vocale Non disponible</string>
@@ -48,7 +50,7 @@
         <item>Image</item>
         <item>Voix</item>
         <item>Annuler</item>
-    </array>
+    </array> -->ss
 
     <!-- Date Headers -->
     <string name="date_header_yesterday">Hier</string>
