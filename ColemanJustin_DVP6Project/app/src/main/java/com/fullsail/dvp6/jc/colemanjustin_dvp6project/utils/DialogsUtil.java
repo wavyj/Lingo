@@ -1,5 +1,8 @@
 package com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils;
 
+import android.content.Context;
+
+import com.fullsail.dvp6.jc.colemanjustin_dvp6project.R;
 import com.sendbird.android.AdminMessage;
 import com.sendbird.android.FileMessage;
 import com.sendbird.android.GroupChannel;
@@ -18,7 +21,7 @@ public final class DialogsUtil {
 
     private static final String TAG = "DialogsFixtures";
 
-    public static ArrayList<Dialog> getDialogs(ArrayList<GroupChannel> groupChannels) {
+    public static ArrayList<Dialog> getDialogs(ArrayList<GroupChannel> groupChannels, Context context) {
 
         ArrayList<Dialog> chats = new ArrayList<>();
         Message m = null;
@@ -40,7 +43,7 @@ public final class DialogsUtil {
                 chats.add(getDialog(i, new Date(i.getLastMessage().getCreatedAt()), m));
             }else {
                 // Create Message when none exist
-                m = new Message("new", new Author(SendBird.getCurrentUser()), "New Conversation", new Date());
+                m = new Message("new", new Author(SendBird.getCurrentUser()), context.getString(R.string.newConvo), new Date());
                 chats.add(getDialog(i, new Date(), m));
             }
         }

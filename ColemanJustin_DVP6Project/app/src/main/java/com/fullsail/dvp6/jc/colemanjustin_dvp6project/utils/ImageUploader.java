@@ -39,8 +39,8 @@ public class ImageUploader{
 
     public ImageUploader(onImageUploadedListener uploadedListener, Uri path){
         mUploadListener = uploadedListener;
-        uploadImage(path);
         mStorageRef = FirebaseStorage.getInstance().getReferenceFromUrl("gs://dvp6-project.appspot.com/");
+        uploadImage(path);
     }
 
     private void uploadImage(Uri path){

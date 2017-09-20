@@ -17,6 +17,7 @@ public class PreferencesUtil {
     public static final String USERNAME = "username";
     public static final String PASSWORD = "password";
     public static final String CONNECTED = "connected";
+    public static final String LANGUAGE = "user-language";
 
     private PreferencesUtil(){
 
@@ -51,6 +52,15 @@ public class PreferencesUtil {
 
     public static String getUsername(Context context){
         return getSharedPreferences(context).getString(USERNAME, "");
+    }
+
+    public static void setLanguage(Context context, String language){
+        SharedPreferences.Editor editor = getSharedPreferences(context).edit();
+        editor.putString(LANGUAGE, language).apply();
+    }
+
+    public static String getLanguage(Context context){
+        return getSharedPreferences(context).getString(LANGUAGE, "");
     }
 
     public static void setConnected(Context context, boolean status){

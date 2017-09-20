@@ -2,8 +2,9 @@
 <resources>
 
     <!-- Login/Signup -->
+    <string name="emailLabel">Correo electrónico</string>
     <string name="usernameLabel">Nombre de usuario</string>
-    <string name="displaynameLabel">Nombre para mostrar</string>
+    <string name="passwordLabel">Contraseña</string>
     <string name="loginLabel">Iniciar sesión</string>
     <string name="signupLabel">Regístrate</string>
     <string name="signupBtn">Regístrate</string>
@@ -23,6 +24,7 @@
     <!-- Conversations -->
     <string name="messages_title">Mensajes</string>
     <string name="emptyMessages">Empezar a chatear. Haga clic en "+" para empezar.</string>
+    <string name="newConvo">Nueva conversación</string>
 
     <!-- Search -->
     <string name="search_hint">Buscar</string>

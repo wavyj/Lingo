@@ -6,6 +6,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,6 +15,8 @@ import com.fullsail.dvp6.jc.colemanjustin_dvp6project.R;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.fragments.ConversationsFragment;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.fragments.EmptyMessagesFragment;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.fragments.MessagingFragment;
+import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.MessagesDatabaseSQLHelper;
+import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.PreferencesUtil;
 import com.sendbird.android.BaseChannel;
 import com.sendbird.android.BaseMessage;
 import com.sendbird.android.GroupChannel;
@@ -23,6 +26,7 @@ import com.sendbird.android.SendBirdException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class ConversationsActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -109,7 +113,7 @@ public class ConversationsActivity extends AppCompatActivity implements View.OnC
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        // Fragment Transactions after Activity has been restored preventing state losssssssss
+        // Fragment Transactions after Activity has been restored preventing state loss
         if (returningResults){
             loadConversations();
         }
@@ -135,14 +139,17 @@ public class ConversationsActivity extends AppCompatActivity implements View.OnC
 
                 mConversations.clear();
                 // Add each channel to conversations arrayList
-                for (GroupChannel i: list){
-                    if (i.getMembers().size() > 1) {
-                        mConversations.add(i.getUrl());
+                if (list != null) {
+                    for (GroupChannel i : list) {
+                        if (i.getMembers().size() > 1) {
+                            mConversations.add(i.getUrl());
+                        }
                     }
                 }
 
                 // Conversations Fragment
                 if (mConversations.size() > 0) {
+                    MessagesDatabaseSQLHelper.getInsance(ConversationsActivity.this).clearAll();
                     getFragmentManager().beginTransaction().replace(R.id.content_frame,
                             ConversationsFragment.newInstance(mConversations), ConversationsFragment.TAG).commit();
                 } else {

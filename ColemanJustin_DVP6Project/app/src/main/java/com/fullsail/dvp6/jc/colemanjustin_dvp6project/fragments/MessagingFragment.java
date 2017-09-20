@@ -7,15 +7,20 @@ import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.inputmethodservice.KeyboardView;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -28,7 +33,9 @@ import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.Author;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.ImageMessage;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.Message;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.MessagesDatabaseSQLHelper;
+import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.PreferencesUtil;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.TimeUtil;
+import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.TranslationUtil;
 import com.sendbird.android.AdminMessage;
 import com.sendbird.android.BaseChannel;
 import com.sendbird.android.BaseMessage;
@@ -38,6 +45,7 @@ import com.sendbird.android.Member;
 import com.sendbird.android.MessageListQuery;
 import com.sendbird.android.SendBird;
 import com.sendbird.android.SendBirdException;
+import com.sendbird.android.User;
 import com.sendbird.android.UserMessage;
 import com.squareup.picasso.Picasso;
 import com.stfalcon.chatkit.commons.ImageLoader;
@@ -45,6 +53,7 @@ import com.stfalcon.chatkit.messages.MessageInput;
 import com.stfalcon.chatkit.messages.MessagesList;
 import com.stfalcon.chatkit.messages.MessagesListAdapter;
 import com.stfalcon.chatkit.utils.DateFormatter;
+import com.zhihu.matisse.MimeType;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -54,7 +63,7 @@ import java.util.Locale;
 import static com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.TimeUtil.getTimeAgo;
 
 public class MessagingFragment extends Fragment implements MessageInput.AttachmentsListener,
-        Dialog.OnClickListener, MessagesActivity.onReceivedUploadPath {
+        Dialog.OnClickListener, MessagesActivity.onReceivedUploadPath, TranslationUtil.onTranslateCompleteListener {
 
     public static final String TAG = "MessagingFragment";
 
@@ -89,6 +98,8 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
 
         String selection = getArguments().getString("SELECTED");
         getChannel(selection);
+
+        PreferencesUtil.setLanguage(getActivity(), getResources().getConfiguration().locale.getLanguage());
     }
 
     private void getChannel(String url){
@@ -111,7 +122,7 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
             @Override
             public boolean onSubmit(CharSequence input) {
 
-                groupChannel.sendUserMessage(String.valueOf(input), SendBird.getCurrentUser().getUserId(), new BaseChannel.SendUserMessageHandler() {
+                groupChannel.sendUserMessage(String.valueOf(input), null, PreferencesUtil.getLanguage(getActivity()), new BaseChannel.SendUserMessageHandler() {
                     @Override
                     public void onSent(UserMessage userMessage, SendBirdException e) {
                         if (e != null){
@@ -119,13 +130,20 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
                             e.printStackTrace();
                         }
 
+
                         // Update MessageListAdapter
-                        messagesListAdapter.addToStart(new Message(userMessage), true);
+                        Message m = new Message(userMessage);
+                        messagesListAdapter.addToStart(m, true);
+
+                        // Cache message
+                        MessagesDatabaseSQLHelper.getInsance(getActivity()).insertMessage(m, groupChannel.getUrl());
+
                     }
                 });
 
                 return true;
             }
+
         });
         inputView.setAttachmentsListener(this);
 
@@ -160,28 +178,33 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
         messagesList.setAdapter(messagesListAdapter);
 
         // Receive messages
-        SendBird.addChannelHandler(groupChannel.getUrl(), new SendBird.ChannelHandler() {
+        SendBird.addChannelHandler("messagingHandler", new SendBird.ChannelHandler() {
             @Override
             public void onMessageReceived(BaseChannel baseChannel, BaseMessage baseMessage) {
                 if (baseChannel != null){
                     if (baseMessage != null){
                         Message m = null;
+
                         // Check type of message
                         if (UserMessage.buildFromSerializedData(baseMessage.serialize()) instanceof UserMessage){
                             UserMessage msg = (UserMessage) UserMessage.buildFromSerializedData(baseMessage.serialize());
                             m = new Message(msg);
-                        }else if (AdminMessage.buildFromSerializedData(baseMessage.serialize()) instanceof  AdminMessage){
-                            AdminMessage msg = (AdminMessage) AdminMessage.buildFromSerializedData(baseMessage.serialize());
-                            m = new Message(msg);
-                        } else if (FileMessage.buildFromSerializedData(baseMessage.serialize()) instanceof FileMessage) {
+
+                            // Translate if not in user's language
+                            if (!m.getLang().equals(PreferencesUtil.getLanguage(getActivity()))) {
+                                new TranslationUtil(getActivity(), m, MessagingFragment.this).execute(msg.getMessage());
+                            }
+
+                        }else if (FileMessage.buildFromSerializedData(baseMessage.serialize()) instanceof FileMessage) {
                             FileMessage msg = (FileMessage) FileMessage.buildFromSerializedData(baseMessage.serialize());
                             m = new ImageMessage(msg);
+
+                            // Update display & Cache message
+                            MessagesDatabaseSQLHelper.getInsance(getActivity()).insertMessage(m, groupChannel.getUrl());
+                            messagesListAdapter.addToStart(m, true);
+
                         }
 
-                        // Update display
-                        if (m != null) {
-                            messagesListAdapter.addToStart(m, true);
-                        }
                     }
                 }
             }
@@ -219,7 +242,7 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
             }
 
             loadedMessages.add(m);
-            Log.d(TAG, String.valueOf(c.getCount()));
+
         }
         c.close();
 
@@ -234,28 +257,26 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
             Log.d(TAG, loadedMessages.get(0).getText());
         }
 
-        // Get the latest messages that are not cached
-        groupChannel.getNextMessagesByTimestamp(lastCachedMessage, false, 60, false, BaseChannel.
-                MessageTypeFilter.ALL, null, new BaseChannel.GetMessagesHandler() {
+        BaseChannel.GetMessagesHandler messagesHandler = new BaseChannel.GetMessagesHandler() {
             @Override
             public void onResult(List<BaseMessage> list, SendBirdException e) {
-                //ArrayList<Message> messages = new ArrayList<Message>();
                 for (BaseMessage i: list){
                     if (i instanceof UserMessage){
                         UserMessage msg = (UserMessage) UserMessage.buildFromSerializedData(i.serialize());
                         Message m = new Message(msg);
                         //messages.add(m);
 
-                        messagesListAdapter.addToStart(m, true);
-
-                        // Cache message into sql database
-                        MessagesDatabaseSQLHelper.getInsance(getActivity()).insertMessage(m, groupChannel.getUrl());
+                        // Translate if not in user's language
+                        if (!m.getLang().equals(PreferencesUtil.getLanguage(getActivity()))) {
+                            new TranslationUtil(getActivity(), m, MessagingFragment.this).execute(msg.getMessage());
+                        }
 
                     }else if (i instanceof FileMessage){
                         FileMessage msg = (FileMessage) FileMessage.buildFromSerializedData(i.serialize());
                         ImageMessage m = new ImageMessage(msg);
                         //messages.add(m);
 
+                        loadedMessages.add(m);
                         messagesListAdapter.addToStart(m, true);
 
                         // Cache message into sql database
@@ -266,7 +287,16 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
                 // Set messages read
                 groupChannel.markAsRead();
             }
-        });
+        };
+
+        if (c.getCount() == 0){
+            groupChannel.getPreviousMessagesByTimestamp(Long.MAX_VALUE, false, 60, false, BaseChannel.
+                    MessageTypeFilter.ALL, null, messagesHandler);
+        } else {
+            // Get the latest messages that are not cached
+            groupChannel.getNextMessagesByTimestamp(lastCachedMessage, false, 60, false, BaseChannel.
+                    MessageTypeFilter.ALL, null, messagesHandler);
+        }
     }
 
     private void setTitle(){
@@ -365,12 +395,13 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
 
     // Image Message
     private void sendImage(String url, int size){
-        groupChannel.sendFileMessage(url, getString(R.string.image_name), "image", 0, getString(R.string.image_name), new BaseChannel.SendFileMessageHandler() {
+        groupChannel.sendFileMessage(url, getString(R.string.image_name), "text/uri-list", 0, "", new BaseChannel.SendFileMessageHandler() {
             @Override
             public void onSent(FileMessage fileMessage, SendBirdException e) {
                 if (e != null){
                     // Error
                     e.printStackTrace();
+                    Log.d(TAG, String.valueOf(e.getCode()));
                 }
 
                 if (fileMessage != null) {
@@ -382,5 +413,14 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
 
             }
         });
+    }
+
+    @Override
+    public void translationComplete(Message m) {
+
+        // Update Message text
+        MessagesDatabaseSQLHelper.getInsance(getActivity()).insertMessage(m, groupChannel.getUrl());
+        messagesListAdapter.addToStart(m, true);
+        loadedMessages.add(m);
     }
 }

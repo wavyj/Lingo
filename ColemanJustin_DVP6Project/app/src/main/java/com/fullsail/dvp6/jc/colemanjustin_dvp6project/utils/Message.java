@@ -22,6 +22,7 @@ public class Message implements IMessage {
      private static final String TAG = "MessageUtil";
     private String mID;
     private String mText;
+    private String mLang;
     private Author mUser;
     private Date mCreatedAt;
 
@@ -30,6 +31,7 @@ public class Message implements IMessage {
         mText = message.getMessage();
         mUser = new Author(message.getSender());
         mCreatedAt = new Date(message.getCreatedAt());
+        mLang = message.getCustomType();
     }
 
     public Message(Author user){
@@ -65,6 +67,10 @@ public class Message implements IMessage {
         return mID;
     }
 
+    public void setText(String text){
+        mText = text;
+    }
+
     @Override
     public String getText() {
         return mText;
@@ -81,5 +87,13 @@ public class Message implements IMessage {
             return mCreatedAt;
         }
         return new Date();
+    }
+
+    public String getLang(){
+        return mLang;
+    }
+
+    public void setTranslated(String translation){
+        mText = translation;
     }
 }

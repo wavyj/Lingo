@@ -140,7 +140,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                     FirebaseUser user = mAuth.getCurrentUser();
                     final String username = user.getDisplayName();
                     // Login user
-                    SendBird.connect(username, new SendBird.ConnectHandler() {
+                    SendBird.connect(email, new SendBird.ConnectHandler() {
                         @Override
                         public void onConnected(User user, SendBirdException e) {
                             if (e != null){

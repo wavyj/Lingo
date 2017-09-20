@@ -39,6 +39,6 @@ public class TimeUtil {
         }else if (diff < 24 * HOUR_MILLIS) {
             return diff / HOUR_MILLIS + " " + context.getString(R.string.date_header_hours);
         }
-        return  DateFormatter.format(date, DateFormatter.Template.TIME);
+        return  DateFormatter.format(date, DateFormatter.Template.STRING_DAY_MONTH);
     }
 }

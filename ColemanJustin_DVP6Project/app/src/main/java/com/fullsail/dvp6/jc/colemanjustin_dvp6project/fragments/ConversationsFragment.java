@@ -63,6 +63,8 @@ public class ConversationsFragment extends Fragment implements DialogsListAdapte
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        dialogsList = (DialogsList) getView().findViewById(R.id.dialogsList);
+
         ArrayList<String> channelsdata = getArguments().getStringArrayList("CHANNELS");
         if (channelsdata == null){
             if (getActivity() instanceof  ConversationsActivity){
@@ -82,7 +84,6 @@ public class ConversationsFragment extends Fragment implements DialogsListAdapte
     }
 
     private void dialogSetup(){
-        dialogsList = (DialogsList) getView().findViewById(R.id.dialogsList);
         imageLoader = new ImageLoader() {
             @Override
             public void loadImage(ImageView imageView, String url) {
@@ -96,7 +97,7 @@ public class ConversationsFragment extends Fragment implements DialogsListAdapte
         dialogsListAdapter = new DialogsListAdapter<>(imageLoader);
 
         // Create Dialog from each channel
-        dialogs = DialogsUtil.getDialogs(mChannels);
+        dialogs = DialogsUtil.getDialogs(mChannels, getActivity());
 
         // Set adapter items
         dialogsListAdapter.setItems(dialogs);

@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.transition.Slide;
+import android.util.Log;
 import android.view.Gravity;
 
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.R;
@@ -49,12 +50,12 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.to
     }
 
     // METHODS
-    private void loginUser(String email, final String username, final String password){
+    private void loginUser(final String email, final String username, final String password){
         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()){
-                    SendBird.connect(username, new SendBird.ConnectHandler() {
+                    SendBird.connect(email, new SendBird.ConnectHandler() {
                         @Override
                         public void onConnected(User user, SendBirdException e) {
                             if (e != null){
@@ -74,6 +75,8 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.to
                             finish();
                         }
                     });
+                }else {
+                    Log.d(TAG, task.getException().getMessage());
                 }
             }
         });
