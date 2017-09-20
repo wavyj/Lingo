@@ -1,5 +1,6 @@
 package com.fullsail.dvp6.jc.colemanjustin_dvp6project.fragments;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,7 +12,6 @@ import android.widget.ImageView;
 
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.R;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.main.ConversationsActivity;
-import com.fullsail.dvp6.jc.colemanjustin_dvp6project.main.LoginActivity;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.main.MessagesActivity;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.Dialog;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.DialogsUtil;
@@ -27,7 +27,6 @@ import com.stfalcon.chatkit.utils.DateFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 
-import static android.app.Activity.RESULT_OK;
 import static com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.TimeUtil.getTimeAgo;
 
 public class ConversationsFragment extends Fragment implements DialogsListAdapter.OnDialogViewClickListener {
@@ -40,7 +39,6 @@ public class ConversationsFragment extends Fragment implements DialogsListAdapte
     private ImageLoader imageLoader;
     private ArrayList<GroupChannel> mChannels;
     private boolean isLast = false;
-
     private ArrayList<Dialog> dialogs;
 
     public static ConversationsFragment newInstance(ArrayList<String> channels) {
@@ -131,7 +129,11 @@ public class ConversationsFragment extends Fragment implements DialogsListAdapte
         // To MessagesActivity
         Intent messageIntent = new Intent(getActivity(), MessagesActivity.class);
         messageIntent.putExtra("channel", current.getGroupChannel().serialize());
+        if (getActivity() instanceof ConversationsActivity){
+            ((ConversationsActivity) getActivity()).eventHandlerAttach(false);
+        }
         getActivity().startActivityForResult(messageIntent, MESSAGING);
+
     }
 
     private void loadChannel(String url){

@@ -28,13 +28,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class ConversationsActivity extends AppCompatActivity implements View.OnClickListener {
+public class ConversationsActivity extends AppCompatActivity implements View.OnClickListener{
 
     private static final String TAG = "ConversationsActivity";
     private static final int SEARCHCODE = 0x01010;
 
     private ArrayList<String> mConversations;
-    private Boolean returningResults = true;
+    private Boolean returningResults = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,24 +67,6 @@ public class ConversationsActivity extends AppCompatActivity implements View.OnC
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        handleEvents();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        SendBird.removeAllChannelHandlers();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        SendBird.removeAllChannelHandlers();
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()){
@@ -102,21 +84,10 @@ public class ConversationsActivity extends AppCompatActivity implements View.OnC
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK){
-            returningResults = true;
-        } else{
-            returningResults = false;
-        }
-
-        showHideFab();
-    }
-
-    @Override
-    protected void onPostResume() {
-        super.onPostResume();
-        // Fragment Transactions after Activity has been restored preventing state loss
-        if (returningResults){
             loadConversations();
+            eventHandlerAttach(true);
         }
+        showHideFab();
     }
 
     public void loadConversations(){
@@ -165,14 +136,14 @@ public class ConversationsActivity extends AppCompatActivity implements View.OnC
             @Override
             public void onMessageReceived(BaseChannel baseChannel, BaseMessage baseMessage) {
                 // Refresh
-                //loadConversations();
+                loadConversations();
             }
 
             @Override
             public void onChannelDeleted(String channelUrl, BaseChannel.ChannelType channelType) {
                 super.onChannelDeleted(channelUrl, channelType);
                 // Refresh
-                //loadConversations();
+                loadConversations();
             }
         });
     }
@@ -186,12 +157,22 @@ public class ConversationsActivity extends AppCompatActivity implements View.OnC
         showHideFab();
     }
 
-    private void showHideFab(){
+    public void showHideFab(){
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.floatingActionButton);
         if (fab.isShown()){
             fab.hide();
+            eventHandlerAttach(false);
         }else {
             fab.show();
+            eventHandlerAttach(true);
+        }
+    }
+
+    public void eventHandlerAttach(boolean b){
+        if (b){
+            handleEvents();
+        }else {
+            SendBird.removeAllChannelHandlers();
         }
     }
 }

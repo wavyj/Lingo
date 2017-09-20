@@ -82,7 +82,7 @@ public class MessagesDatabaseSQLHelper extends SQLiteOpenHelper {
     public Cursor query(String currentChannel){
         String selection = COLUMN_CHANNEL_URL + " = ?";
         String[] selectionArgs = {currentChannel};
-        String sortOrder = COLUMN_TIME + " DESC";
+        String sortOrder = COLUMN_TIME + " ASC";
         String limit = "60";
 
         return mDatabase.query(TABLE_NAME, null, selection, selectionArgs, null, null, sortOrder, limit);

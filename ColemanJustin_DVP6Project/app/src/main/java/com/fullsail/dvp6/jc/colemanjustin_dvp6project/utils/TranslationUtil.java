@@ -17,13 +17,17 @@ public class TranslationUtil extends AsyncTask<String, Void, String> {
     private Context mContext;
     private onTranslateCompleteListener mOnTranslationListener;
     private Message m;
+    private boolean b;
+    private int i;
 
     public interface onTranslateCompleteListener{
-        void translationComplete(Message m);
+        void translationComplete(Message m, int i, boolean b);
     }
 
-    public TranslationUtil(Context context, Message message, onTranslateCompleteListener onTranslationComplete){
+    public TranslationUtil(Context context, Message message, boolean isLast, int num, onTranslateCompleteListener onTranslationComplete){
         mContext = context;
+        b = isLast;
+        i = num;
         m = message;
         mOnTranslationListener = onTranslationComplete;
     }
@@ -38,7 +42,7 @@ public class TranslationUtil extends AsyncTask<String, Void, String> {
                 Translate.TranslateOption.sourceLanguage(m.getLang()),
                 Translate.TranslateOption.targetLanguage(PreferencesUtil.getLanguage(mContext)));
 
-        Log.d(TAG, translation.getTranslatedText());
+        //Log.d(TAG, translation.getTranslatedText());
         return translation.getTranslatedText();
     }
 
@@ -46,6 +50,6 @@ public class TranslationUtil extends AsyncTask<String, Void, String> {
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
         m.setTranslated(s);
-        mOnTranslationListener.translationComplete(m);
+        mOnTranslationListener.translationComplete(m, i, b);
     }
 }
