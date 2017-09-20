@@ -193,6 +193,9 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
                             // Translate if not in user's language
                             if (!m.getLang().equals(PreferencesUtil.getLanguage(getActivity()))) {
                                 new TranslationUtil(getActivity(), m, MessagingFragment.this).execute(msg.getMessage());
+                            }else {
+                                messagesListAdapter.addToStart(m, true);
+                                MessagesDatabaseSQLHelper.getInsance(getActivity()).insertMessage(m, groupChannel.getUrl());
                             }
 
                         }else if (FileMessage.buildFromSerializedData(baseMessage.serialize()) instanceof FileMessage) {
@@ -269,6 +272,9 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
                         // Translate if not in user's language
                         if (!m.getLang().equals(PreferencesUtil.getLanguage(getActivity()))) {
                             new TranslationUtil(getActivity(), m, MessagingFragment.this).execute(msg.getMessage());
+                        }else {
+                            messagesListAdapter.addToStart(m, true);
+                            MessagesDatabaseSQLHelper.getInsance(getActivity()).insertMessage(m, groupChannel.getUrl());
                         }
 
                     }else if (i instanceof FileMessage){
@@ -419,8 +425,7 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
     public void translationComplete(Message m) {
 
         // Update Message text
-        MessagesDatabaseSQLHelper.getInsance(getActivity()).insertMessage(m, groupChannel.getUrl());
         messagesListAdapter.addToStart(m, true);
-        loadedMessages.add(m);
+        MessagesDatabaseSQLHelper.getInsance(getActivity()).insertMessage(m, groupChannel.getUrl());
     }
 }
