@@ -46,6 +46,9 @@
     <string name="activeLabel">Activo:</string>
     <string name="online_status">En línea</string>
     <string name="unavailable_status">Indisponible</string>
+    <string name="progress">Cargando...</string>
+    <string name="imageerrortitle">¡Uy!</string>
+    <string name="imageerror">Mensaje no se pudo enviar.</string>
     <array name="othermessages">
         <item>Imagen</item>
         <item>Voz</item>

@@ -1,5 +1,6 @@
 package com.fullsail.dvp6.jc.colemanjustin_dvp6project.main;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -36,12 +37,12 @@ public class MessagesActivity extends AppCompatActivity implements ImageUploader
     public Toolbar mToolbar;
 
     @Override
-    public void onUploadComplete(String imageUrl, int size) {
-        mOnReceivedPath.onReceived(imageUrl, size);
+    public void onUploadComplete(String imageUrl, int size, ProgressDialog progress) {
+        mOnReceivedPath.onReceived(imageUrl, size, progress);
     }
 
     public interface onReceivedUploadPath{
-        void onReceived(String url, int size);
+        void onReceived(String url, int size, ProgressDialog progress);
     }
 
     @Override
@@ -126,7 +127,7 @@ public class MessagesActivity extends AppCompatActivity implements ImageUploader
             mOnReceivedPath = (MessagingFragment) getFragmentManager().
                     findFragmentByTag(MessagingFragment.TAG);
 
-            ImageUploader imageUploader = new ImageUploader(this, selected.get(0));
+            new ImageUploader(this, this, selected.get(0));
 
         }
     }

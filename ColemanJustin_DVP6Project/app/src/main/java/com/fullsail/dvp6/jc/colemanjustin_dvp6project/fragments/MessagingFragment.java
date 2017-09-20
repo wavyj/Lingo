@@ -3,6 +3,7 @@ package com.fullsail.dvp6.jc.colemanjustin_dvp6project.fragments;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -397,23 +398,29 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
 
     // Firebase Storage Upload
     @Override
-    public void onReceived(String url, int size) {
-        sendImage(url, size);
+    public void onReceived(String url, int size, ProgressDialog progress) {
+        sendImage(url, size, progress);
     }
 
     // Image Message
-    private void sendImage(String url, int size){
+    private void sendImage(String url, int size, final ProgressDialog progress){
         groupChannel.sendFileMessage(url, getString(R.string.image_name), "text/uri-list", 0, "", new BaseChannel.SendFileMessageHandler() {
             @Override
             public void onSent(FileMessage fileMessage, SendBirdException e) {
                 if (e != null){
                     // Error
                     e.printStackTrace();
-                    Log.d(TAG, String.valueOf(e.getCode()));
+                    progress.cancel();
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity(), R.style.dialog);
+                    dialog.setTitle(R.string.imageerrortitle);
+                    dialog.setMessage(R.string.imageerror);
+                    dialog.setPositiveButton(R.string.ok, null);
+                    dialog.show();
+                    return;
                 }
 
                 if (fileMessage != null) {
-                    Log.d(TAG, fileMessage.getUrl());
+                    progress.cancel();
 
                     ImageMessage m = new ImageMessage(fileMessage);
                     messagesListAdapter.addToStart(m, true);
@@ -430,7 +437,7 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
                 isLast = true;
             }
 
-            if (!loadedMessages.get(i).getLang().equals(PreferencesUtil.getLanguage(getActivity()))){
+            if (loadedMessages.get(i).getLang() != null && !loadedMessages.get(i).getLang().equals(PreferencesUtil.getLanguage(getActivity()))){
                 new TranslationUtil(getActivity(), loadedMessages.get(i), isLast, i, MessagingFragment.this).execute(loadedMessages.get(i).getText());
             }else if (isLast){
                 for (Message message: loadedMessages){

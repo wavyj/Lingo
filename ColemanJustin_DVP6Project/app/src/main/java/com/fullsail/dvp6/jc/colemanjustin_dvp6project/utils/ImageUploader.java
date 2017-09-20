@@ -1,10 +1,13 @@
 package com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
+import com.fullsail.dvp6.jc.colemanjustin_dvp6project.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -32,19 +35,28 @@ public class ImageUploader{
     private UploadTask mUploadTask;
     private String mImageUrl;
     private onImageUploadedListener mUploadListener;
+    private ProgressDialog mProgress;
 
     public interface onImageUploadedListener{
-        void onUploadComplete(String imageUrl, int size);
+        void onUploadComplete(String imageUrl, int size, ProgressDialog progress);
     }
 
-    public ImageUploader(onImageUploadedListener uploadedListener, Uri path){
+    public ImageUploader(Context context, onImageUploadedListener uploadedListener, Uri path){
+        mContext = context;
         mUploadListener = uploadedListener;
         mStorageRef = FirebaseStorage.getInstance().getReferenceFromUrl("gs://dvp6-project.appspot.com/");
         uploadImage(path);
     }
 
     private void uploadImage(Uri path){
-        final String imageName = SendBird.getCurrentUser().getUserId() + "/" + path.getLastPathSegment();
+        // Show progress
+        mProgress = new ProgressDialog(mContext, R.style.dialog);
+        mProgress.setIndeterminate(true);
+        mProgress.setMessage(mContext.getString(R.string.progress));
+        mProgress.show();
+        mProgress.setCanceledOnTouchOutside(false);
+
+        final String imageName = SendBird.getCurrentUser().getUserId() + "/" + new Date().getTime();
         final StorageReference imageRef = mStorageRef.child("images/" + imageName);
 
         // Upload Image
@@ -60,7 +72,6 @@ public class ImageUploader{
                     public void onSuccess(Uri uri) {
                         mImageUrl = uri.toString();
 
-                        //Log.d(TAG, mImageUrl);
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -74,7 +85,7 @@ public class ImageUploader{
                     @Override
                     public void onSuccess(StorageMetadata storageMetadata) {
                         int size = (int) storageMetadata.getSizeBytes();
-                        mUploadListener.onUploadComplete(mImageUrl, size);
+                        mUploadListener.onUploadComplete(mImageUrl, size, mProgress);
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -85,14 +96,6 @@ public class ImageUploader{
             }
         });
 
-    }
-
-    public UploadTask getUploadTask(){
-        return mUploadTask;
-    }
-
-    public String getImageUrl(){
-        return mImageUrl;
     }
 
 }
