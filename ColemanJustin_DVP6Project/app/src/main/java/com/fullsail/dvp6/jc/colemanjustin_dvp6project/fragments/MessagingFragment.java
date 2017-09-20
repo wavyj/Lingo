@@ -8,6 +8,9 @@ import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteConstraintException;
+import android.database.sqlite.SQLiteException;
 import android.inputmethodservice.KeyboardView;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
@@ -56,6 +59,7 @@ import com.stfalcon.chatkit.messages.MessagesListAdapter;
 import com.stfalcon.chatkit.utils.DateFormatter;
 import com.zhihu.matisse.MimeType;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -104,7 +108,6 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
         mTranslatedMessages = new ArrayList<>();
 
         PreferencesUtil.setLanguage(getActivity(), getResources().getConfiguration().locale.getLanguage());
-        Log.d(TAG, PreferencesUtil.getLanguage(getActivity()));
     }
 
     private void getChannel(String url){
@@ -441,9 +444,15 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
                 new TranslationUtil(getActivity(), loadedMessages.get(i), isLast, i, MessagingFragment.this).execute(loadedMessages.get(i).getText());
             }else if (isLast){
                 for (Message message: loadedMessages){
-                    Log.d(TAG, "Translated: " + message.getText());
+
+                    try {
+                        MessagesDatabaseSQLHelper.getInsance(getActivity()).insertMessage(message, groupChannel.getUrl());
+                    } catch (SQLiteConstraintException e){
+                        e.printStackTrace();
+                        message.setID(message.getId() + "-0");
+                    }
+
                     messagesListAdapter.addToStart(message, true);
-                    MessagesDatabaseSQLHelper.getInsance(getActivity()).insertMessage(message, groupChannel.getUrl());
                 }
             }
         }
@@ -456,9 +465,15 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
 
         if (b){
             for (Message message: loadedMessages){
-                Log.d(TAG, "Translated: " + message.getText());
+
+                try {
+                    MessagesDatabaseSQLHelper.getInsance(getActivity()).insertMessage(message, groupChannel.getUrl());
+                } catch (SQLiteConstraintException e){
+                    e.printStackTrace();
+                    message.setID(message.getId() + "-0");
+                }
+
                 messagesListAdapter.addToStart(message, true);
-                MessagesDatabaseSQLHelper.getInsance(getActivity()).insertMessage(message, groupChannel.getUrl());
             }
         }
     }

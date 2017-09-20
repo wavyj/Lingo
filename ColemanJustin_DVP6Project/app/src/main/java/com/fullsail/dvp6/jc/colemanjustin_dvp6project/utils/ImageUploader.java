@@ -24,6 +24,7 @@ import com.sendbird.android.SendBird;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class ImageUploader{
@@ -56,7 +57,10 @@ public class ImageUploader{
         mProgress.show();
         mProgress.setCanceledOnTouchOutside(false);
 
-        final String imageName = SendBird.getCurrentUser().getUserId() + "/" + new Date().getTime();
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMMddhhmmss");
+        String formatted = format.format(new Date());
+
+        final String imageName = SendBird.getCurrentUser().getUserId() + "/" + formatted;
         final StorageReference imageRef = mStorageRef.child("images/" + imageName);
 
         // Upload Image

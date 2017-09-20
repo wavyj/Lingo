@@ -72,7 +72,7 @@ public class MessagesDatabaseSQLHelper extends SQLiteOpenHelper {
         }
         values.put(COLUMN_SENDER, m.getUser().getId());
 
-        return mDatabase.insert(TABLE_NAME, null, values);
+        return mDatabase.insertOrThrow(TABLE_NAME, null, values);
     }
 
     public int clearAll(){

@@ -67,6 +67,10 @@ public class Message implements IMessage {
         return mID;
     }
 
+    public void setID(String id){
+        mID = id;
+    }
+
     public void setText(String text){
         mText = text;
     }

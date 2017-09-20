@@ -17,7 +17,7 @@ public class ImageMessage extends Message implements MessageContentType.Image{
     public ImageMessage(FileMessage fileMessage) {
         super(fileMessage);
         mID = String.valueOf(fileMessage.getMessageId());
-        mText = "";
+        mText = "Image";
         mImageUrl = fileMessage.getUrl();
         mCreatedAt = new Date(fileMessage.getCreatedAt());
         mUser = new Author(fileMessage.getSender());
