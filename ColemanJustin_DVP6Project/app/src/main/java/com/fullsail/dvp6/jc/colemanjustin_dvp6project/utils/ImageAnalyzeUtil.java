@@ -38,19 +38,20 @@ public class ImageAnalyzeUtil {
     private static final String ANDROID_PACKAGE_HEADER = "X-Android-Package";
     private static String API_KEY = "";
 
-    public static void setup(Context context, Uri path){
+    public static void setup(Context context, String path){
         API_KEY = context.getString(R.string.apiKey);
         cloudVision(path, context);
         Log.d(TAG, "Starting...");
     }
 
-    private static void cloudVision(final Uri path, final Context context){
+    private static void cloudVision(final String path, final Context context){
         // Call api via async task and retrieve response
 
         new AsyncTask<Object, Void, List<EntityAnnotation>>(){
             @Override
             protected List<EntityAnnotation> doInBackground(Object... objects) {
                 Log.d(TAG, "Analyze Method");
+                try {
                 VisionRequestInitializer requestInitializer = new VisionRequestInitializer(API_KEY);
                 BatchAnnotateImagesRequest batchAnnotateImagesRequest = new BatchAnnotateImagesRequest();
 
@@ -59,7 +60,7 @@ public class ImageAnalyzeUtil {
                 Log.d(TAG, "Setting up");
 
                 // Set source uri for image
-                ImageSource imgSource = new ImageSource().setGcsImageUri(path.getPath());
+                ImageSource imgSource = new ImageSource().setGcsImageUri(path);
                 Image img = new Image().setSource(imgSource);
                 // Set Text Detection
                 Feature feature = new Feature().setType("TEXT_DETECTION");
@@ -72,7 +73,7 @@ public class ImageAnalyzeUtil {
                 // Add request list to batch annotate request
                 batchAnnotateImagesRequest.setRequests(requests);
 
-                try {
+
                     // Execute Image annotate request
                     Vision.Images.Annotate annotateRequest = new Vision.Builder(
                             AndroidHttp.newCompatibleTransport(), GsonFactory.getDefaultInstance(), null
