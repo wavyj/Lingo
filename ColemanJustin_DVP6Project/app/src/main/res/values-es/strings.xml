@@ -71,4 +71,6 @@
     <string name="members">Participantes</string>
     <string name="search">Buscar</string>
     <string name="delete">Borrar</string>
+    <string name="incorrectpassword">Contraseña incorrecta</string>
+    <string name="incorrectpasswordMsg">Esa contraseña es incorrecta. Intente restablecer su contraseña.</string>
 </resources>

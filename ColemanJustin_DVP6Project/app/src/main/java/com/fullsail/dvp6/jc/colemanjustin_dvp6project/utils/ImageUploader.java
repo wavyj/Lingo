@@ -69,7 +69,6 @@ public class ImageUploader{
             @Override
             public void onSuccess(UploadTask.TaskSnapshot snapshot) {
                 Log.d(TAG, "Success");
-
                 // Get download url
                 imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override

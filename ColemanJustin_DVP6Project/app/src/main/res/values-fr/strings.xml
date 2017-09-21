@@ -2,9 +2,8 @@
 <resources>
 
     <!-- Login/Signup -->
-    <!--
+
     <string name="usernameLabel">Nom d\'utilisateur</string>
-    <string name="displaynameLabel">Afficher un nom</string>
     <string name="loginLabel">S\'identifier</string>
     <string name="signupLabel">S\'inscrire</string>
     <string name="signupBtn">S\'inscrire</string>
@@ -14,7 +13,7 @@
     <string name="alertTitle">Invalide</string>
     <string name="authenticating">Authentifiant...</string>
     <string name="notfound">Pas trouvé</string>
-    <string name="notfoundMsg">Aucun utilisateur avec ce nom d\'utilisateur n'a été trouvé.</string>
+    <string name="notfoundMsg">Aucun utilisateur avec ce nom d\'utilisateur n\'a été trouvé.</string>
     <string name="ok">D\'accord</string>
     <string name="exists">Indisponible</string>
     <string name="existsMsg">Nom d\'utilisateur déjà pris.</string>
@@ -33,12 +32,12 @@
     <string name="startConvo">Commence la conversation avec</string>
 
     <!-- Messaging -->
-    <!--
+
     <string name="inputbar_hint">Entrez un message...</string>
     <string name="voice_prompt">Dis quelque chose de gentil</string>
     <string name="voiceunavailable">Reconnaissance vocale Non disponible</string>
     <string name="permissiontitle">Permission Requise</string>
-    <string name="permissionmsg">L\'accès à votre stockage externe est nécessaire pour envoyer des messages d'image.</string>
+    <string name="permissionmsg">L\'accès à votre stockage externe est nécessaire pour envoyer des messages d\'image.</string>
     <string name="tryagain">Essaye encore</string>
     <string name="cancel">Annuler</string>
     <string name="delete_convo">Supprimer la conversation?</string>
@@ -50,7 +49,7 @@
         <item>Image</item>
         <item>Voix</item>
         <item>Annuler</item>
-    </array> -->ss
+    </array> -->
 
     <!-- Date Headers -->
     <string name="date_header_yesterday">Hier</string>
@@ -68,5 +67,13 @@
     <string name="members">Membres</string>
     <string name="search">Rechercher</string>
     <string name="delete">Supprimez</string>
+    <string name="emailLabel">Email</string>
+    <string name="imageerror">Le message n\'a pas pu être envoyé</string>
+    <string name="imageerrortitle">Oops désolé</string>
+    <string name="incorrectpassword">Mot de passe incorrect</string>
+    <string name="incorrectpasswordMsg">Ce mot de passe était incorrect. Essayez de réinitialiser votre mot de passe.</string>
+    <string name="newConvo">Nouvelle conversation</string>
+    <string name="passwordLabel">Mot de passe</string>
+    <string name="progress">Téléchargement vers un serveur...</string>
 
 </resources>

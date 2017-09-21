@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ColemanJustin_DVP6Project</string>
+    <string name="app_name" translatable="false">ColemanJustin_DVP6Project</string>
 
     <!-- Login/Signup -->
     <string name="emailLabel">Email</string>
@@ -82,9 +82,9 @@
     <string name="link">link</string>
 
     <!-- Google APIs -->
-    <string name="apiKey">AIzaSyAw9LRxbCzzZEeHoSaJx5XJFv0ULG5rd80</string>
+    <string name="apiKey" translatable="false">AIzaSyAw9LRxbCzzZEeHoSaJx5XJFv0ULG5rd80</string>
 
     <!-- SendBird -->
-    <string name="APP_ID">C5B1EC71-C373-4568-B634-EF2BEEAB8228</string>
+    <string name="APP_ID" translatable="false">C5B1EC71-C373-4568-B634-EF2BEEAB8228</string>
 
 </resources>
