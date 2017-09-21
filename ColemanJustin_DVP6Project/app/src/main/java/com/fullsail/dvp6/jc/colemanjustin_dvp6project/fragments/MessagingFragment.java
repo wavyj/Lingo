@@ -449,7 +449,7 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
                         MessagesDatabaseSQLHelper.getInsance(getActivity()).insertMessage(message, groupChannel.getUrl());
                     } catch (SQLiteConstraintException e){
                         e.printStackTrace();
-                        message.setID(message.getId() + "-0");
+                        return;
                     }
 
                     messagesListAdapter.addToStart(message, true);
@@ -470,7 +470,7 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
                     MessagesDatabaseSQLHelper.getInsance(getActivity()).insertMessage(message, groupChannel.getUrl());
                 } catch (SQLiteConstraintException e){
                     e.printStackTrace();
-                    message.setID(message.getId() + "-0");
+                    return;
                 }
 
                 messagesListAdapter.addToStart(message, true);

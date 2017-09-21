@@ -73,6 +73,8 @@ public class ImageUploader{
                 imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
+                        Log.d(TAG, uri.toString());
+                        ImageAnalyzeUtil.setup(mContext, uri);
                         mImageUrl = uri.toString();
 
                     }

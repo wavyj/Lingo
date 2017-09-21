@@ -24,7 +24,7 @@ public class MessagesDatabaseSQLHelper extends SQLiteOpenHelper {
 
     private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " +
             TABLE_NAME + "(" +
-            COLUMN_ID + " INTEGER PRIMARY KEY, " +
+            COLUMN_ID + " AUTOINCREMENT INTEGER PRIMARY KEY, " +
             COLUMN_CHANNEL_URL + " TEXT, " +
             COLUMN_TEXT + " TEXT, " +
             COLUMN_TIME + " INTEGER, " +
@@ -60,7 +60,6 @@ public class MessagesDatabaseSQLHelper extends SQLiteOpenHelper {
 
     public long insertMessage(Message m, String channel){
         ContentValues values = new ContentValues();
-        values.put(COLUMN_ID, m.getId());
         values.put(COLUMN_CHANNEL_URL, channel);
         values.put(COLUMN_TEXT, m.getText());
         values.put(COLUMN_TIME, m.getCreatedAt().getTime());
