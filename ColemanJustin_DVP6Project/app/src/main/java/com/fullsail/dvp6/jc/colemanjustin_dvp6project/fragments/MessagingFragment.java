@@ -12,6 +12,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteException;
 import android.inputmethodservice.KeyboardView;
+import android.net.Uri;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.annotation.Nullable;
@@ -175,6 +176,19 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
 
         messagesListAdapter = new MessagesListAdapter<Message>(SendBird.getCurrentUser().getUserId()
                 , imageLoader);
+        messagesListAdapter.setOnMessageClickListener(new MessagesListAdapter.OnMessageClickListener<Message>() {
+            @Override
+            public void onMessageClick(Message message) {
+                // Show Message Text
+                if (!message.getText().equals("")) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.dialog);
+                    builder.setMessage(message.getText());
+                    builder.setPositiveButton(R.string.ok, null);
+                    builder.show();
+                }
+            }
+        });
+
         getMessages(groupChannel);
         messagesListAdapter.setDateHeadersFormatter(new DateFormatter.Formatter() {
             @Override
@@ -406,13 +420,14 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
 
     // Firebase Storage Upload
     @Override
-    public void onReceived(String url, int size, ProgressDialog progress) {
-        sendImage(url, size, progress);
+    public void onReceived(Uri uri, int size, ProgressDialog progress) {
+        sendImage(uri, size, progress);
     }
 
     // Image Message
-    private void sendImage(String url, int size, final ProgressDialog progress){
-        groupChannel.sendFileMessage(url, getString(R.string.image_name), "text/uri-list", 0, "", new BaseChannel.SendFileMessageHandler() {
+    private void sendImage(final Uri uri, int size, final ProgressDialog progress){
+        groupChannel.sendFileMessage(uri.toString(), uri.getLastPathSegment(), "text/uri-list", 0, "",
+                new BaseChannel.SendFileMessageHandler() {
             @Override
             public void onSent(FileMessage fileMessage, SendBirdException e) {
                 if (e != null){
@@ -432,6 +447,8 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
 
                     ImageMessage m = new ImageMessage(fileMessage);
 
+                    // Detect Text in Image
+                    ImageAnalyzeUtil.setup(getActivity(), uri.toString(), MessagingFragment.this, m);
                     messagesListAdapter.addToStart(m, true);
                 }
 
@@ -440,12 +457,9 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
     }
 
     @Override
-    public void detectionComplete(String text) {
-        // Temporary Dialog
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.dialog);
-        builder.setMessage(text);
-        builder.setPositiveButton(R.string.ok, null);
-        builder.show();
+    public void detectionComplete(String text, ImageMessage m) {
+        // Cache ImageMessage
+        MessagesDatabaseSQLHelper.getInsance(getActivity()).insertMessage(m, groupChannel.getUrl());
     }
 
     // Translation

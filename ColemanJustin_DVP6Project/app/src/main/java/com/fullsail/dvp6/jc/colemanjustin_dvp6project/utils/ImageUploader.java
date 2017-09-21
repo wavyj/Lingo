@@ -4,26 +4,18 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.R;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnPausedListener;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.sendbird.android.SendBird;
 
-import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -34,12 +26,12 @@ public class ImageUploader{
     private FirebaseAuth mAuth;
     private StorageReference mStorageRef;
     private UploadTask mUploadTask;
-    private String mImageUrl;
+    private Uri mImageUri;
     private onImageUploadedListener mUploadListener;
     private ProgressDialog mProgress;
 
     public interface onImageUploadedListener{
-        void onUploadComplete(String imageUrl, int size, ProgressDialog progress);
+        void onUploadComplete(Uri imageUrl, int size, ProgressDialog progress);
     }
 
     public ImageUploader(Context context, onImageUploadedListener uploadedListener, Uri path){
@@ -74,7 +66,7 @@ public class ImageUploader{
                     @Override
                     public void onSuccess(Uri uri) {
                         //Log.d(TAG, uri.toString());
-                        mImageUrl = uri.toString();
+                        mImageUri = uri;
 
                     }
                 }).addOnFailureListener(new OnFailureListener() {
@@ -89,7 +81,7 @@ public class ImageUploader{
                     @Override
                     public void onSuccess(StorageMetadata storageMetadata) {
                         int size = (int) storageMetadata.getSizeBytes();
-                        mUploadListener.onUploadComplete(mImageUrl, size, mProgress);
+                        mUploadListener.onUploadComplete(mImageUri, size, mProgress);
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override

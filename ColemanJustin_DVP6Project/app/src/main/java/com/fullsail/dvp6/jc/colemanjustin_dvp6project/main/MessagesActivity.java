@@ -37,12 +37,12 @@ public class MessagesActivity extends AppCompatActivity implements ImageUploader
     public Toolbar mToolbar;
 
     @Override
-    public void onUploadComplete(String imageUrl, int size, ProgressDialog progress) {
-        mOnReceivedPath.onReceived(imageUrl, size, progress);
+    public void onUploadComplete(Uri mImageUri, int size, ProgressDialog progress) {
+        mOnReceivedPath.onReceived(mImageUri, size, progress);
     }
 
     public interface onReceivedUploadPath{
-        void onReceived(String url, int size, ProgressDialog progress);
+        void onReceived(Uri uri, int size, ProgressDialog progress);
     }
 
     @Override

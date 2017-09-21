@@ -51,6 +51,7 @@
     <string name="progress">Uploading...</string>
     <string name="imageerrortitle">Whoops!</string>
     <string name="imageerror">Message could not be sent</string>
+    <string name="textDetect">Text Found In This Image:</string>
     <array name="othermessages">
         <item>Image</item>
         <item>Voice</item>

@@ -36,7 +36,7 @@ public class ImageAnalyzeUtil{
     private static String API_KEY = "";
 
     public interface onDetectComplete{
-        void detectionComplete(String text);
+        void detectionComplete(String text, ImageMessage m);
     }
 
     public static void setup(Context context, String path, onDetectComplete detectComplete, ImageMessage m){
@@ -167,10 +167,12 @@ public class ImageAnalyzeUtil{
         // Save text to image Message
         if (mImage != null && !text.equals("")){
             mImage.setText(text);
+        }else if (mImage != null && text.equals("")){
+            mImage.setText("");
         }
 
-        // Show Dialog
-        mOnDetectComplete.detectionComplete(text);
+        // Send back Image with text
+        mOnDetectComplete.detectionComplete(text, mImage);
     }
 
 }
