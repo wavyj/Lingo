@@ -43,7 +43,7 @@
     <string name="cancel">Cancelar</string>
     <string name="delete_convo">¿Eliminar la conversación?</string>
     <string name="image_name">Imagen</string>
-    <string name="activeLabel">Activo:</string>
+    <string name="activeLabel">Ultima vez visto:</string>
     <string name="online_status">En línea</string>
     <string name="unavailable_status">Indisponible</string>
     <string name="progress">Cargando...</string>
@@ -73,4 +73,5 @@
     <string name="delete">Borrar</string>
     <string name="incorrectpassword">Contraseña incorrecta</string>
     <string name="incorrectpasswordMsg">Esa contraseña es incorrecta. Intente restablecer su contraseña.</string>
+    <string name="textDetect">Texto encontrado en esta imagen</string>
 </resources>

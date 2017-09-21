@@ -25,7 +25,7 @@ public class MessagesDatabaseSQLHelper extends SQLiteOpenHelper {
 
     private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " +
             TABLE_NAME + "(" +
-            COLUMN_ID + " INTEGER PRIMARY KEY, " +
+            COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             COLUMN_CHANNEL_URL + " TEXT, " +
             COLUMN_TEXT + " TEXT, " +
             COLUMN_TIME + " INTEGER, " +

@@ -45,7 +45,7 @@
     <string name="cancel">Cancel</string>
     <string name="delete_convo">Delete Conversation?</string>
     <string name="image_name">Image</string>
-    <string name="activeLabel">Active:</string>
+    <string name="activeLabel">Last Seen:</string>
     <string name="online_status">Online</string>
     <string name="unavailable_status">Unavailable</string>
     <string name="progress">Uploading...</string>
@@ -76,11 +76,11 @@
     <string name="delete">Delete</string>
 
     <!-- Transitions -->
-    <string name="logo">logo</string>
-    <string name="userID">ID</string>
-    <string name="displayname">name</string>
-    <string name="btn">button</string>
-    <string name="link">link</string>
+    <string name="logo" translatable="false">logo</string>
+    <string name="userID" translatable="false">ID</string>
+    <string name="displayname" translatable="false">name</string>
+    <string name="btn" translatable="false">button</string>
+    <string name="link" translatable="false">link</string>
 
     <!-- Google APIs -->
     <string name="apiKey" translatable="false">AIzaSyAw9LRxbCzzZEeHoSaJx5XJFv0ULG5rd80</string>

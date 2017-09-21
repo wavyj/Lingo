@@ -42,7 +42,7 @@
     <string name="cancel">Annuler</string>
     <string name="delete_convo">Supprimer la conversation?</string>
     <string name="image_name">Image</string>
-    <string name="activeLabel">Actif:</string>
+    <string name="activeLabel">Vu la dernière fois:</string>
     <string name="online_status">En ligne</string>
     <string name="unavailable_status">Indisponible</string>
     <array name="othermessages">
@@ -75,5 +75,6 @@
     <string name="newConvo">Nouvelle conversation</string>
     <string name="passwordLabel">Mot de passe</string>
     <string name="progress">Téléchargement vers un serveur...</string>
+    <string name="textDetect">Texte trouvé dans cette image</string>
 
 </resources>
