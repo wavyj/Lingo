@@ -74,7 +74,6 @@ public class ImageUploader{
                     @Override
                     public void onSuccess(Uri uri) {
                         //Log.d(TAG, uri.toString());
-                        ImageAnalyzeUtil.setup(mContext, uri.toString());
                         mImageUrl = uri.toString();
 
                     }

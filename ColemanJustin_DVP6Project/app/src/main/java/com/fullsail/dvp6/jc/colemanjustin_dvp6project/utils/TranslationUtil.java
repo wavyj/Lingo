@@ -49,7 +49,9 @@ public class TranslationUtil extends AsyncTask<String, Void, String> {
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
-        m.setTranslated(s);
-        mOnTranslationListener.translationComplete(m, i, b);
+        if (m != null) {
+            m.setTranslated(s);
+            mOnTranslationListener.translationComplete(m, i, b);
+        }
     }
 }

@@ -34,6 +34,7 @@ import com.fullsail.dvp6.jc.colemanjustin_dvp6project.R;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.main.ImagePickerActivity;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.main.MessagesActivity;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.Author;
+import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.ImageAnalyzeUtil;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.ImageMessage;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.Message;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.MessagesDatabaseSQLHelper;
@@ -68,7 +69,8 @@ import java.util.Locale;
 import static com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.TimeUtil.getTimeAgo;
 
 public class MessagingFragment extends Fragment implements MessageInput.AttachmentsListener,
-        Dialog.OnClickListener, MessagesActivity.onReceivedUploadPath, TranslationUtil.onTranslateCompleteListener {
+        Dialog.OnClickListener, MessagesActivity.onReceivedUploadPath,
+        TranslationUtil.onTranslateCompleteListener, ImageAnalyzeUtil.onDetectComplete {
 
     public static final String TAG = "MessagingFragment";
 
@@ -161,6 +163,9 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
             @Override
             public void loadImage(ImageView imageView, String url) {
                 if (url != null && !url.equals("")) {
+                    // Check if image is already saved an load from cache
+
+                    // Download from url if not cached
                     Picasso.with(getActivity()).load(url).into(imageView);
                 }else {
                     Picasso.with(getActivity()).load(R.drawable.emptybox_icon).into(imageView);
@@ -426,6 +431,7 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
                     progress.cancel();
 
                     ImageMessage m = new ImageMessage(fileMessage);
+
                     messagesListAdapter.addToStart(m, true);
                 }
 
@@ -433,6 +439,16 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
         });
     }
 
+    @Override
+    public void detectionComplete(String text) {
+        // Temporary Dialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.dialog);
+        builder.setMessage(text);
+        builder.setPositiveButton(R.string.ok, null);
+        builder.show();
+    }
+
+    // Translation
     private void translateMessages(){
         boolean isLast = false;
         for(int i = 0; i < loadedMessages.size(); i++){
