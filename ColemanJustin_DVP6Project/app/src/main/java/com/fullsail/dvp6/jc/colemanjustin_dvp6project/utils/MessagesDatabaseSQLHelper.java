@@ -5,13 +5,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.sendbird.android.BaseMessage;
 
 public class MessagesDatabaseSQLHelper extends SQLiteOpenHelper {
     private static final String TAG = "MessagesDatabaseSQLHelp";
     private static final int DATABASE_VERSION = 1;
-    private static final String DATABASE_FILE = "messages.db";
+    private static final String DATABASE_FILE = "translateMessages.db";
 
     public static final String TABLE_NAME = "messages";
     public static final String COLUMN_ID = "_id";
@@ -24,7 +25,7 @@ public class MessagesDatabaseSQLHelper extends SQLiteOpenHelper {
 
     private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " +
             TABLE_NAME + "(" +
-            COLUMN_ID + " AUTOINCREMENT INTEGER PRIMARY KEY, " +
+            COLUMN_ID + " INTEGER PRIMARY KEY, " +
             COLUMN_CHANNEL_URL + " TEXT, " +
             COLUMN_TEXT + " TEXT, " +
             COLUMN_TIME + " INTEGER, " +
@@ -63,15 +64,22 @@ public class MessagesDatabaseSQLHelper extends SQLiteOpenHelper {
         values.put(COLUMN_CHANNEL_URL, channel);
         values.put(COLUMN_TEXT, m.getText());
         values.put(COLUMN_TIME, m.getCreatedAt().getTime());
-        if (m instanceof ImageMessage) {
-            values.put(COLUMN_TYPE, "Image");
-            values.put(COLUMN_IMAGE, ((ImageMessage) m).getImageUrl());
-        }else {
-            values.put(COLUMN_TYPE, "Text");
-        }
+        values.put(COLUMN_TYPE, "Text");
         values.put(COLUMN_SENDER, m.getUser().getId());
 
-        return mDatabase.insertOrThrow(TABLE_NAME, null, values);
+        return mDatabase.insert(TABLE_NAME, null, values);
+    }
+
+    public long insertImage(ImageMessage m, String channel){
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_CHANNEL_URL, channel);
+        values.put(COLUMN_TEXT, m.getText());
+        values.put(COLUMN_TIME, m.getCreatedAt().getTime());
+        values.put(COLUMN_TYPE, "Image");
+        values.put(COLUMN_IMAGE, m.getImageUrl());
+        values.put(COLUMN_SENDER, m.getUser().getId());
+
+        return mDatabase.insert(TABLE_NAME, null, values);
     }
 
     public int clearAll(){
@@ -81,7 +89,7 @@ public class MessagesDatabaseSQLHelper extends SQLiteOpenHelper {
     public Cursor query(String currentChannel){
         String selection = COLUMN_CHANNEL_URL + " = ?";
         String[] selectionArgs = {currentChannel};
-        String sortOrder = COLUMN_TIME + " ASC";
+        String sortOrder = COLUMN_TIME + " DESC";
         String limit = "60";
 
         return mDatabase.query(TABLE_NAME, null, selection, selectionArgs, null, null, sortOrder, limit);

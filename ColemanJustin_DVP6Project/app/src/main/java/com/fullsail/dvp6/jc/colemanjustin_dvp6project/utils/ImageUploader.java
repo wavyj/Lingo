@@ -65,27 +65,13 @@ public class ImageUploader{
                 imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
-                        //Log.d(TAG, uri.toString());
-                        mImageUri = uri;
+                        mUploadListener.onUploadComplete(uri, 0, mProgress);
 
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         //Error
-                        e.printStackTrace();
-                    }
-                });
-
-                imageRef.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
-                    @Override
-                    public void onSuccess(StorageMetadata storageMetadata) {
-                        int size = (int) storageMetadata.getSizeBytes();
-                        mUploadListener.onUploadComplete(mImageUri, size, mProgress);
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
                         e.printStackTrace();
                     }
                 });
