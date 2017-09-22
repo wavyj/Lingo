@@ -1,6 +1,7 @@
 package com.fullsail.dvp6.jc.colemanjustin_dvp6project.main;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteException;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -120,7 +121,6 @@ public class ConversationsActivity extends AppCompatActivity implements View.OnC
 
                 // Conversations Fragment
                 if (mConversations.size() > 0) {
-                    MessagesDatabaseSQLHelper.getInsance(ConversationsActivity.this).clearAll();
                     getFragmentManager().beginTransaction().replace(R.id.content_frame,
                             ConversationsFragment.newInstance(mConversations), ConversationsFragment.TAG).commit();
                 } else {

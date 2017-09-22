@@ -84,7 +84,8 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
     private ImageLoader imageLoader;
     private GroupChannel groupChannel;
     private Uri mImageUri;
-    private ArrayList<Message> mTranslatedMessages;
+    private ArrayList<Message> mTextMessages;
+    private long mLastCachedTime = Long.MAX_VALUE;
 
     public static MessagingFragment newInstance(String selection) {
 
@@ -109,9 +110,10 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
         String selection = getArguments().getString("SELECTED");
         getChannel(selection);
 
-        mTranslatedMessages = new ArrayList<>();
+        loadedMessages = new ArrayList<>();
+        mTextMessages = new ArrayList<>();
 
-        PreferencesUtil.setLanguage(getActivity(), getResources().getConfiguration().locale.getLanguage());
+        PreferencesUtil.setLanguage(getActivity(), Locale.getDefault().getLanguage());
     }
 
     private void getChannel(String url){
@@ -145,11 +147,9 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
 
                         // Update MessageListAdapter
                         Message m = new Message(userMessage);
-                        messagesListAdapter.addToStart(m, true);
+                        loadedMessages.add(m);
 
-                        // Cache message
-                        MessagesDatabaseSQLHelper.getInsance(getActivity()).insertMessage(m, groupChannel.getUrl());
-
+                        translateMessages();
                     }
                 });
 
@@ -240,14 +240,17 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
     }
 
     private void getMessages(final GroupChannel groupChannel){
-        loadedMessages = new ArrayList<>();
+        loadedMessages.clear();
 
         // Load Messages from SQL database
         MessagesDatabaseSQLHelper db = MessagesDatabaseSQLHelper.getInsance(getActivity());
         Cursor c = db.query(groupChannel.getUrl());
+        Log.d(TAG, String.valueOf(c.getCount()));
+
         while (c.moveToNext()){
             String id = c.getString(c.getColumnIndex(MessagesDatabaseSQLHelper.COLUMN_ID));
             String text = c.getString(c.getColumnIndex(MessagesDatabaseSQLHelper.COLUMN_TEXT));
+            Log.d(TAG, text);
             long time = c.getLong(c.getColumnIndex(MessagesDatabaseSQLHelper.COLUMN_TIME));
             String senderID = c.getString(c.getColumnIndex(MessagesDatabaseSQLHelper.COLUMN_SENDER));
             String type = c.getString(c.getColumnIndex(MessagesDatabaseSQLHelper.COLUMN_TYPE));
@@ -261,8 +264,6 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
             Message m;
             ImageMessage img;
 
-            Log.d(TAG, "HERE");
-
             if (type.equals("Text")) {
                 m = new Message(id, a, text, new Date(time));
                 loadedMessages.add(m);
@@ -274,24 +275,18 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
                 loadedMessages.add(img);
             }
 
+            // Get the time of the last cached message
+            mLastCachedTime = loadedMessages.get(0).getCreatedAt().getTime();
+            translateMessages();
+
         }
         c.close();
 
-        long lastCachedMessage = Long.MAX_VALUE;
-
-        // Add cached Messages
-        if (loadedMessages != null && loadedMessages.size() > 0) {
-            messagesListAdapter.addToEnd(loadedMessages, false);
-
-            // Get the time of the last cached message
-            lastCachedMessage = loadedMessages.get(0).getCreatedAt().getTime();
-        }
+        mLastCachedTime = Long.MAX_VALUE;
 
         BaseChannel.GetMessagesHandler messagesHandler = new BaseChannel.GetMessagesHandler() {
             @Override
             public void onResult(List<BaseMessage> list, SendBirdException e) {
-                loadedMessages.clear();
-
                 for(int i = 0; i < list.size(); i++){
 
                     if (list.get(i) instanceof  UserMessage){
@@ -316,12 +311,13 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
             }
         };
 
-        if (loadedMessages.size() == 0){
-            groupChannel.getPreviousMessagesByTimestamp(Long.MAX_VALUE, false, 60, false, BaseChannel.
+
+        if (messagesListAdapter.getItemCount() == 0){
+            groupChannel.getPreviousMessagesByTimestamp(mLastCachedTime, false, 60, false, BaseChannel.
                     MessageTypeFilter.ALL, null, messagesHandler);
         } else {
             // Get the latest messages that are not cached
-            groupChannel.getNextMessagesByTimestamp(lastCachedMessage, false, 60, false, BaseChannel.
+            groupChannel.getNextMessagesByTimestamp(mLastCachedTime, false, 60, false, BaseChannel.
                     MessageTypeFilter.ALL, null, messagesHandler);
         }
     }
@@ -465,46 +461,84 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
     @Override
     public void detectionComplete(String text, ImageMessage m) {
         // Cache ImageMessage
-        MessagesDatabaseSQLHelper.getInsance(getActivity()).insertImage(m, groupChannel.getUrl());
+        try {
+            long result = MessagesDatabaseSQLHelper.getInsance(getActivity()).insertImage(m, groupChannel.getUrl());
+            Log.d(TAG, "Insert Image Result: " + String.valueOf(result));
+        } catch (SQLiteConstraintException e){
+            int result = MessagesDatabaseSQLHelper.getInsance(getActivity()).updateImage(m, groupChannel.getUrl());
+            Log.d(TAG, "Update Image Result: " + String.valueOf(result));
+        } catch (SQLiteException e){
+            e.printStackTrace();
+        }
     }
 
     // Translation
     private void translateMessages(){
         boolean isLast = false;
-        for(int i = 0; i < loadedMessages.size(); i++){
-            if (i == loadedMessages.size() - 1){
+        mTextMessages = new ArrayList<>();
+
+      // Add each message that needs to be translated to a separate arraylist
+        for (Message m: loadedMessages) {
+            if (m.getLang()!= null && !m.getLang().equals(PreferencesUtil.getLanguage(getActivity()))) {
+                mTextMessages.add(m);
+            }
+        }
+
+        // Display other messages if none need to be translated
+        if (mTextMessages.size() == 0){
+            displayLoadedMessages();
+        }
+
+        // Translate each message
+        for(int i = 0; i < mTextMessages.size(); i++){
+            if (i == mTextMessages.size() - 1){
                 isLast = true;
             }
 
-            if (loadedMessages.get(i).getLang() != null && !loadedMessages.get(i).getLang().equals(PreferencesUtil.getLanguage(getActivity()))){
-                new TranslationUtil(getActivity(), loadedMessages.get(i), isLast, i, MessagingFragment.this).execute(loadedMessages.get(i).getText());
-            }else if (isLast){
-                // After all messages have been checked
-                // Cache each message and display them
-                for (Message message: loadedMessages){
-
-                    if (message instanceof ImageMessage) {
-
-                        if (message.getText().equals("") || message.getText().equals("Image")) {
-                            // Detect Text in Image
-                            ImageAnalyzeUtil.setup(getActivity(), ((ImageMessage) message).
-                                    getImageUrl(), MessagingFragment.this, ((ImageMessage) message));
-                        }
-                    }else {
-                        MessagesDatabaseSQLHelper.getInsance(getActivity()).insertMessage(message, groupChannel.getUrl());
-                    }
-
-                    messagesListAdapter.addToStart(message, true);
-                }
-
-                loadedMessages.clear();
-            }
+            new TranslationUtil(getActivity(), loadedMessages.get(i), isLast, i, MessagingFragment.
+                    this).execute(loadedMessages.get(i).getText());
         }
+    }
+
+    private void displayLoadedMessages(){
+        // After all messages have been checked
+        // Cache each message and display them
+        for (Message message: loadedMessages){
+
+            if (message instanceof ImageMessage) {
+
+                if (message.getText().equals("") || message.getText().equals("Image")) {
+                    // Detect Text in Image
+                    ImageAnalyzeUtil.setup(getActivity(), ((ImageMessage) message).
+                            getImageUrl(), MessagingFragment.this, ((ImageMessage) message));
+                }
+            }else {
+                if (!MessagesDatabaseSQLHelper.getInsance(getActivity()).checkMessage(message, groupChannel.getUrl())){
+                    // Insert if message does not exist in database
+                    try {
+                        long result = MessagesDatabaseSQLHelper.getInsance(getActivity()).insertMessage(message, groupChannel.getUrl());
+                        Log.d(TAG, "Insert Text Result: " + String.valueOf(result));
+                    } catch (SQLiteException e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            messagesListAdapter.addToStart(message, true);
+        }
+
+        loadedMessages.clear();
     }
 
     @Override
     public void translationComplete(Message m, int i, boolean b) {
-        Message msg = loadedMessages.get(i);
-        msg = m;
+        if (mTextMessages.size() > 0) {
+            Message msg = mTextMessages.get(i);
+            msg = m;
+
+            if (b){
+                displayLoadedMessages();
+            }
+        }
     }
 }

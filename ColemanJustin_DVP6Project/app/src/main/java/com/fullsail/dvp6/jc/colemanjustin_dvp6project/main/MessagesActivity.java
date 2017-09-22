@@ -70,11 +70,17 @@ public class MessagesActivity extends AppCompatActivity implements ImageUploader
         Intent receivedIntent = getIntent();
         if (receivedIntent != null && receivedIntent.hasExtra(CHANNEL)){
 
-            groupChannel = (GroupChannel) GroupChannel.buildFromSerializedData(receivedIntent.getByteArrayExtra(CHANNEL));
-            mToolbar.setTitle("");
-            // Messages Fragment
-            getFragmentManager().beginTransaction().replace(R.id.content_frame, MessagingFragment.
-                    newInstance(groupChannel.getUrl()), MessagingFragment.TAG).commit();
+            try {
+                groupChannel = (GroupChannel) GroupChannel.buildFromSerializedData(receivedIntent.getByteArrayExtra(CHANNEL));
+                mToolbar.setTitle("");
+                // Messages Fragment
+                getFragmentManager().beginTransaction().replace(R.id.content_frame, MessagingFragment.
+                        newInstance(groupChannel.getUrl()), MessagingFragment.TAG).commit();
+            } catch (IllegalArgumentException e){
+                e.printStackTrace();
+                MessagesActivity.this.setResult(RESULT_CANCELED);
+                finish();
+            }
         }
     }
 
