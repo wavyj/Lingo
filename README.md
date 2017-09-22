@@ -19,8 +19,8 @@ User authentication is handled via Firebase Authentication and a Sendbird accoun
 * **Password** *(Required)* - The set of characters only you should know
 
 ##### Test Users
-* **1.** * - Email: testemail@example.com Password: testpass
-* **2.** * - Email: othertest@example.com Password: testpass
+* **1.** - Email: testemail@example.com Password: testpass
+* **2.** - Email: othertest@example.com Password: testpass
 
 
 ## Week 1 Features
