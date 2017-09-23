@@ -5,32 +5,38 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.stfalcon.chatkit.messages.MessagesList
-        android:id="@+id/messagesList"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/typingStatus"
-        app:incomingTextLinkColor="@color/blue"
-        app:outcomingTextLinkColor="@color/blue"/>
-
-    <LinearLayout
+    <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:id="@+id/typingStatus"
-        android:layout_above="@+id/input">
-
-        <TextView
-            android:visibility="gone"
-            android:id="@+id/typingLabel"
+        android:layout_alignParentTop="true"
+        android:layout_above="@+id/line">
+        <com.stfalcon.chatkit.messages.MessagesList
+            android:id="@+id/messagesList"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="You are typing..."
-            android:layout_marginStart="16dp"
-            android:layout_marginBottom="5dp" />
-    </LinearLayout>
+            android:layout_height="match_parent"
+            android:layout_above="@+id/suggestions"
+            app:outcomingDefaultBubbleColor="@color/colorPrimary"
+            app:incomingTextLinkColor="@color/colorAccent"
+            app:outcomingTextLinkColor="@color/colorAccent"/>
+
+        <LinearLayout
+            android:id="@+id/suggestions"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            android:layout_gravity="bottom"
+            android:layout_margin="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Suggestions"/>
+        </LinearLayout>
+    </android.support.design.widget.CoordinatorLayout>
 
     <View
+        android:id="@+id/line"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_above="@+id/input"

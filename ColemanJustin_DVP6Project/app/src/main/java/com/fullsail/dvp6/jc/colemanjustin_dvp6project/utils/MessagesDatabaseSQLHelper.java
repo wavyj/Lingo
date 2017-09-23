@@ -23,6 +23,7 @@ public class MessagesDatabaseSQLHelper extends SQLiteOpenHelper {
     public static final String COLUMN_TIME = "time";
     public static final String COLUMN_SENDER = "sender";
     public static final String COLUMN_IMAGE = "image";
+    public static final String COLUMN_IMAGE_DATA = "imageData";
     public static final String COLUMN_TYPE = "type";
 
     private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " +
@@ -33,6 +34,7 @@ public class MessagesDatabaseSQLHelper extends SQLiteOpenHelper {
             COLUMN_TIME + " INTEGER, " +
             COLUMN_IMAGE + " TEXT, " +
             COLUMN_SENDER + " TEXT, " +
+            COLUMN_IMAGE_DATA + "BLOB, " +
             COLUMN_TYPE + " TEXT)";
 
     private static MessagesDatabaseSQLHelper INSTANCE = null;

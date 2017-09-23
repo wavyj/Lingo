@@ -88,4 +88,8 @@
     <!-- SendBird -->
     <string name="APP_ID" translatable="false">C5B1EC71-C373-4568-B634-EF2BEEAB8228</string>
 
+    <!-- API.ai -->
+    <string name="apiaiDevKey">f5d4e355a4104febbc8bba8fb72579a2</string>
+    <string name="apiaiClientKey">ce7c699ee2514d9b8632cb27af98d736</string>
+
 </resources>

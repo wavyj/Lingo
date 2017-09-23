@@ -11,6 +11,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteException;
+import android.graphics.Bitmap;
 import android.inputmethodservice.KeyboardView;
 import android.net.Uri;
 import android.os.Bundle;
@@ -40,6 +41,7 @@ import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.ImageMessage;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.Message;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.MessagesDatabaseSQLHelper;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.PreferencesUtil;
+import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.SmartReplyUtil;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.TimeUtil;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.TranslationUtil;
 import com.sendbird.android.AdminMessage;
@@ -61,6 +63,8 @@ import com.stfalcon.chatkit.messages.MessagesListAdapter;
 import com.stfalcon.chatkit.utils.DateFormatter;
 import com.zhihu.matisse.MimeType;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -71,7 +75,8 @@ import static com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.TimeUtil.getT
 
 public class MessagingFragment extends Fragment implements MessageInput.AttachmentsListener,
         Dialog.OnClickListener, MessagesActivity.onReceivedUploadPath,
-        TranslationUtil.onTranslateCompleteListener, ImageAnalyzeUtil.onDetectComplete {
+        TranslationUtil.onTranslateCompleteListener, ImageAnalyzeUtil.onDetectComplete,
+        SmartReplyUtil.onSuggestionsCompleteListener{
 
     public static final String TAG = "MessagingFragment";
 
@@ -114,6 +119,7 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
         mTextMessages = new ArrayList<>();
 
         PreferencesUtil.setLanguage(getActivity(), Locale.getDefault().getLanguage());
+        new SmartReplyUtil(getActivity(), "Hi", MessagingFragment.this);
     }
 
     private void getChannel(String url){
@@ -539,6 +545,14 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
             if (b){
                 displayLoadedMessages();
             }
+        }
+    }
+
+    @Override
+    public void onSuggestionsComplete(String suggestion) {
+        // Update Display
+        if (!suggestion.equals("")){
+
         }
     }
 }

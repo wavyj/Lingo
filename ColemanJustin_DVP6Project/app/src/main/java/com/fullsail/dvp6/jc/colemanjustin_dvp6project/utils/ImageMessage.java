@@ -1,5 +1,7 @@
 package com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils;
 
+import android.graphics.Bitmap;
+
 import com.sendbird.android.FileMessage;
 import com.stfalcon.chatkit.commons.models.MessageContentType;
 
@@ -13,6 +15,7 @@ public class ImageMessage extends Message implements MessageContentType.Image{
     private Author mUser;
     private Date mCreatedAt;
     private String mImageUrl = "";
+    private byte[] mImage;
 
     public ImageMessage(FileMessage fileMessage) {
         super(fileMessage);
@@ -38,5 +41,13 @@ public class ImageMessage extends Message implements MessageContentType.Image{
 
     public String getImageUrl(){
         return mImageUrl;
+    }
+
+    public void setImage(byte[] imageData){
+        mImage = imageData;
+    }
+
+    public byte[] getImageData(){
+        return mImage;
     }
 }

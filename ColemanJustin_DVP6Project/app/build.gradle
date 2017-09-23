@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 25
     buildToolsVersion "26.0.1"
     defaultConfig {
         applicationId "com.fullsail.dvp6.jc.colemanjustin_dvp6project"
         minSdkVersion 21
-        targetSdkVersion 26
+        targetSdkVersion 25
         versionCode 1
         versionName "1.0"
         multiDexEnabled true
@@ -37,12 +37,11 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile files('libs/sendbird-android-sdk-3.0.37.jar')
-
     // Translate API
-    compile ('com.google.apis:google-api-services-translate:v2-rev47-1.22.0') {
+    compile('com.google.apis:google-api-services-translate:v2-rev47-1.22.0') {
         exclude group: 'com.google.guava'
     }
-    compile ('com.google.cloud:google-cloud-translate:0.5.0') {
+    compile('com.google.cloud:google-cloud-translate:0.5.0') {
         exclude group: 'io.grpc', module: 'grpc-all'
         exclude group: 'com.google.protobuf', module: 'protobuf-java'
         exclude group: 'com.google.api-client', module: 'google-api-client-appengine'
@@ -60,8 +59,8 @@ dependencies {
     compile 'com.zhihu.android:matisse:0.4.3'
     compile 'com.google.api-client:google-api-client-android:1.20.0' exclude module: 'httpclient'
     compile 'com.google.http-client:google-http-client-gson:1.20.0' exclude module: 'httpclient'
-
     compile 'com.google.apis:google-api-services-vision:v1-rev2-1.21.0'
     testCompile 'junit:junit:4.12'
+    compile 'ai.api:libai:1.6.11'
 }
 apply plugin: 'com.google.gms.google-services'
