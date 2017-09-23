@@ -91,6 +91,8 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
     private Uri mImageUri;
     private ArrayList<Message> mTextMessages;
     private long mLastCachedTime = Long.MAX_VALUE;
+    private String mSuggestion;
+    private FloatingActionButton mFab;
 
     public static MessagingFragment newInstance(String selection) {
 
@@ -118,8 +120,10 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
         loadedMessages = new ArrayList<>();
         mTextMessages = new ArrayList<>();
 
+        mFab = (FloatingActionButton) getView().findViewById(R.id.suggestionBtn);
+        mFab.hide();
+
         PreferencesUtil.setLanguage(getActivity(), Locale.getDefault().getLanguage());
-        new SmartReplyUtil(getActivity(), "Hi", MessagingFragment.this);
     }
 
     private void getChannel(String url){
@@ -138,6 +142,13 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
 
         // MessageInput Setup
         inputView = (MessageInput) getView().findViewById(R.id.input);
+        mFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                inputView.getInputEditText().setText(mSuggestion);
+                showSuggestion();
+            }
+        });
         inputView.setInputListener(new MessageInput.InputListener() {
             @Override
             public boolean onSubmit(CharSequence input) {
@@ -150,6 +161,10 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
                             e.printStackTrace();
                         }
 
+                        // Hide suggestion Fab
+                        if (mFab != null && mFab.isShown()){
+                            showSuggestion();
+                        }
 
                         // Update MessageListAdapter
                         Message m = new Message(userMessage);
@@ -226,6 +241,9 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
                         if (UserMessage.buildFromSerializedData(baseMessage.serialize()) instanceof UserMessage){
                             UserMessage msg = (UserMessage) UserMessage.buildFromSerializedData(baseMessage.serialize());
                             m = new Message(msg);
+
+                            // Suggest Reply
+                            new SmartReplyUtil(getActivity(), m.getText(), MessagingFragment.this);
 
                             loadedMessages.add(m);
 
@@ -412,6 +430,10 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
 
         if (requestCode == SPEECH_CODE && resultCode == Activity.RESULT_OK && data != null) {
             ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+            // Hide suggestion Fab
+            if (mFab != null && mFab.isShown()){
+                showSuggestion();
+            }
             inputView.getInputEditText().setText(result.get(0));
         }
     }
@@ -419,6 +441,10 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
     // Firebase Storage Upload
     @Override
     public void onReceived(Uri uri, int size, ProgressDialog progress) {
+        // Hide suggestion Fab
+        if (mFab != null && mFab.isShown()){
+            showSuggestion();
+        }
         sendImage(uri, size, progress);
     }
 
@@ -469,10 +495,8 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
         // Cache ImageMessage
         try {
             long result = MessagesDatabaseSQLHelper.getInsance(getActivity()).insertImage(m, groupChannel.getUrl());
-            Log.d(TAG, "Insert Image Result: " + String.valueOf(result));
         } catch (SQLiteConstraintException e){
             int result = MessagesDatabaseSQLHelper.getInsance(getActivity()).updateImage(m, groupChannel.getUrl());
-            Log.d(TAG, "Update Image Result: " + String.valueOf(result));
         } catch (SQLiteException e){
             e.printStackTrace();
         }
@@ -523,7 +547,6 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
                     // Insert if message does not exist in database
                     try {
                         long result = MessagesDatabaseSQLHelper.getInsance(getActivity()).insertMessage(message, groupChannel.getUrl());
-                        Log.d(TAG, "Insert Text Result: " + String.valueOf(result));
                     } catch (SQLiteException e){
                         e.printStackTrace();
                     }
@@ -552,7 +575,19 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
     public void onSuggestionsComplete(String suggestion) {
         // Update Display
         if (!suggestion.equals("")){
+            mSuggestion = suggestion;
+            showSuggestion();
+        }
+    }
 
+    private void showSuggestion(){
+        if (mFab != null){
+            if (mFab.isShown()){
+                mFab.hide();
+                mSuggestion = null;
+            }else {
+                mFab.show();
+            }
         }
     }
 }

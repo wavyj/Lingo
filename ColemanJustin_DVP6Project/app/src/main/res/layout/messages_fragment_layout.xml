@@ -10,29 +10,27 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_above="@+id/line">
+
         <com.stfalcon.chatkit.messages.MessagesList
             android:id="@+id/messagesList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/suggestions"
-            app:outcomingDefaultBubbleColor="@color/colorPrimary"
             app:incomingTextLinkColor="@color/colorAccent"
-            app:outcomingTextLinkColor="@color/colorAccent"/>
+            app:outcomingDefaultBubbleColor="@color/colorPrimary"
+            app:outcomingTextLinkColor="@color/colorAccent" />
 
-        <LinearLayout
-            android:id="@+id/suggestions"
-            android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:orientation="horizontal"
-            android:visibility="gone"
-            android:layout_gravity="bottom"
-            android:layout_margin="16dp">
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/suggestionBtn"
+            android:src="@drawable/icon_suggestion"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            app:layout_anchor="@+id/messagesList"
+            app:layout_anchorGravity="bottom|center"
+            android:layout_margin="10dp"
+            app:fabSize="normal"
+            android:backgroundTint="@color/colorAccent"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Suggestions"/>
-        </LinearLayout>
+
     </android.support.design.widget.CoordinatorLayout>
 
     <View
