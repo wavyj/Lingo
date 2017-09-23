@@ -29,17 +29,15 @@ User authentication is handled via Firebase Authentication and a Sendbird accoun
 * **Notifications** - Users receive notifications of new incoming messages when not inside the app
 
 ## Week 2 Features
+* **Messaging** *(Image and Speech to Text)* - Sending and receiving messagesand
+* **Translation** - Translating text and images
+* **Smart Reply** - Responses to messages based on machine learning
 
 
 ## Bugs
-
-### Functionality
+* Some login error alert dialogs might not display properly
 * Reply Suggestions not yet implemented
 * Speech To Text is brokent at the moment/it may not work all the time
-
-
-### UI
-* None at the moment
 
 ## Built With
 * [SendBird](https://sendbird.com) - Messaging and Authentication
