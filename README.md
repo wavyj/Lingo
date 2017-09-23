@@ -33,8 +33,8 @@ User authentication is handled via Firebase Authentication and a Sendbird accoun
 * **Translation** - Translating text and images
 * **Smart Reply** - Responses to messages based on machine learning
 
-
 ## Bugs
+* Clicking on a text message displays its text which is meant for image messages only
 * Some login error alert dialogs might not display properly
 * Reply Suggestions not yet implemented
 * Speech To Text is brokent at the moment/it may not work all the time
