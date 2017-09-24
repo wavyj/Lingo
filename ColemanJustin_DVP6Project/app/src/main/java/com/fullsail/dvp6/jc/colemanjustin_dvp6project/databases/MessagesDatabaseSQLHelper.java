@@ -1,20 +1,18 @@
-package com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils;
+package com.fullsail.dvp6.jc.colemanjustin_dvp6project.databases;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
-import com.sendbird.android.BaseMessage;
-
-import java.util.Locale;
+import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.ImageMessage;
+import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.Message;
 
 public class MessagesDatabaseSQLHelper extends SQLiteOpenHelper {
     private static final String TAG = "MessagesDatabaseSQLHelp";
     private static final int DATABASE_VERSION = 1;
-    private static final String DATABASE_FILE = "translateMessages.db";
+    private static final String DATABASE_FILE = "messages.db";
 
     public static final String TABLE_NAME = "messages";
     public static final String COLUMN_ID = "_id";
@@ -23,7 +21,6 @@ public class MessagesDatabaseSQLHelper extends SQLiteOpenHelper {
     public static final String COLUMN_TIME = "time";
     public static final String COLUMN_SENDER = "sender";
     public static final String COLUMN_IMAGE = "image";
-    public static final String COLUMN_IMAGE_DATA = "imageData";
     public static final String COLUMN_TYPE = "type";
 
     private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " +
@@ -34,7 +31,6 @@ public class MessagesDatabaseSQLHelper extends SQLiteOpenHelper {
             COLUMN_TIME + " INTEGER, " +
             COLUMN_IMAGE + " TEXT, " +
             COLUMN_SENDER + " TEXT, " +
-            COLUMN_IMAGE_DATA + "BLOB, " +
             COLUMN_TYPE + " TEXT)";
 
     private static MessagesDatabaseSQLHelper INSTANCE = null;
@@ -72,7 +68,7 @@ public class MessagesDatabaseSQLHelper extends SQLiteOpenHelper {
         values.put(COLUMN_TYPE, "Text");
         values.put(COLUMN_SENDER, m.getUser().getId());
 
-        return mDatabase.insert(TABLE_NAME, null, values);
+        return mDatabase.insertOrThrow(TABLE_NAME, null, values);
     }
 
     public int updateText(Message m, String channel){
@@ -111,7 +107,7 @@ public class MessagesDatabaseSQLHelper extends SQLiteOpenHelper {
         values.put(COLUMN_IMAGE, m.getImageUrl());
         values.put(COLUMN_SENDER, m.getUser().getId());
 
-        return mDatabase.insert(TABLE_NAME, null, values);
+        return mDatabase.insertOrThrow(TABLE_NAME, null, values);
     }
 
     public boolean checkMessage(Message m, String channel){

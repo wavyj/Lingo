@@ -8,52 +8,44 @@ import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteException;
 import android.graphics.Bitmap;
-import android.inputmethodservice.KeyboardView;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.R;
+import com.fullsail.dvp6.jc.colemanjustin_dvp6project.databases.ImagesDatabaseSQLHelper;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.main.ImagePickerActivity;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.main.MessagesActivity;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.Author;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.ImageAnalyzeUtil;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.ImageMessage;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.Message;
-import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.MessagesDatabaseSQLHelper;
+import com.fullsail.dvp6.jc.colemanjustin_dvp6project.databases.MessagesDatabaseSQLHelper;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.PreferencesUtil;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.SmartReplyUtil;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.TimeUtil;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.TranslationUtil;
-import com.sendbird.android.AdminMessage;
 import com.sendbird.android.BaseChannel;
 import com.sendbird.android.BaseMessage;
 import com.sendbird.android.FileMessage;
 import com.sendbird.android.GroupChannel;
 import com.sendbird.android.Member;
-import com.sendbird.android.MessageListQuery;
 import com.sendbird.android.SendBird;
 import com.sendbird.android.SendBirdException;
-import com.sendbird.android.User;
 import com.sendbird.android.UserMessage;
 import com.squareup.picasso.Picasso;
 import com.stfalcon.chatkit.commons.ImageLoader;
@@ -61,11 +53,9 @@ import com.stfalcon.chatkit.messages.MessageInput;
 import com.stfalcon.chatkit.messages.MessagesList;
 import com.stfalcon.chatkit.messages.MessagesListAdapter;
 import com.stfalcon.chatkit.utils.DateFormatter;
-import com.zhihu.matisse.MimeType;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -184,12 +174,47 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
         messagesList = (MessagesList) getView().findViewById(R.id.messagesList);
         imageLoader = new ImageLoader() {
             @Override
-            public void loadImage(ImageView imageView, String url) {
+            public void loadImage(final ImageView imageView, final String url) {
                 if (url != null && !url.equals("")) {
                     // Check if image is already saved an load from cache
+                    Cursor c = ImagesDatabaseSQLHelper.getInstance(getActivity()).getImage(url);
 
-                    // Download from url if not cached
-                    Picasso.with(getActivity()).load(url).into(imageView);
+                    if (c != null && c.getCount() != 0){
+                        Log.d(TAG, String.valueOf(c.getCount()));
+                        c.moveToFirst();
+                        byte[] img = c.getBlob(c.getColumnIndex(ImagesDatabaseSQLHelper.COLUMN_IMAGE));
+                        Bitmap bmp = BitmapFactory.decodeByteArray(img, 0, img.length);
+                        imageView.setImageBitmap(bmp);
+                    }else {
+                        // Download from url if not cached
+                            new AsyncTask<Void, Void, Bitmap>(){
+                                @Override
+                                protected Bitmap doInBackground(Void... params) {
+                                    // Load into image view
+                                    try {
+                                        Bitmap bmp = Picasso.with(getActivity()).load(url).get();
+
+                                        // Create byte array
+                                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                        bmp.compress(Bitmap.CompressFormat.JPEG, 90, baos);
+                                        byte[] imageBytes = baos.toByteArray();
+
+                                        // Cache image
+                                        ImagesDatabaseSQLHelper.getInstance(getActivity()).insertImage(url, imageBytes);
+                                    }catch (IOException e){
+                                        e.printStackTrace();
+                                    }
+                                    return null;
+                                }
+
+                                @Override
+                                protected void onPostExecute(Bitmap bitmap) {
+                                    super.onPostExecute(bitmap);
+
+                                    imageView.setImageBitmap(bitmap);
+                                }
+                            }.execute();
+                    }
                 }else {
                     Picasso.with(getActivity()).load(R.drawable.emptybox_icon).into(imageView);
                 }

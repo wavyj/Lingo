@@ -3,14 +3,20 @@ package com.fullsail.dvp6.jc.colemanjustin_dvp6project.fragments;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.R;
+import com.fullsail.dvp6.jc.colemanjustin_dvp6project.databases.ImagesDatabaseSQLHelper;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.main.ConversationsActivity;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.main.MessagesActivity;
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils.Dialog;
@@ -24,6 +30,8 @@ import com.stfalcon.chatkit.dialogs.DialogsList;
 import com.stfalcon.chatkit.dialogs.DialogsListAdapter;
 import com.stfalcon.chatkit.utils.DateFormatter;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -40,6 +48,7 @@ public class ConversationsFragment extends Fragment implements DialogsListAdapte
     private ArrayList<GroupChannel> mChannels;
     private boolean isLast = false;
     private ArrayList<Dialog> dialogs;
+    private ImageView mImageView;
 
     public static ConversationsFragment newInstance(ArrayList<String> channels) {
 
@@ -84,9 +93,46 @@ public class ConversationsFragment extends Fragment implements DialogsListAdapte
     private void dialogSetup(){
         imageLoader = new ImageLoader() {
             @Override
-            public void loadImage(ImageView imageView, String url) {
+            public void loadImage(ImageView imageView, final String url) {
                 if (url != null && !url.equals("")) {
-                    Picasso.with(getActivity()).load(url).into(imageView);
+                    mImageView = imageView;
+
+                    // Check if image is already saved an load from cache
+                    Bitmap img = ConversationsFragment.this.loadImage(url);
+
+                    if (img != null){
+                        imageView.setImageBitmap(img);
+                    } else {
+
+                        // Download from url if not cached
+                        new AsyncTask<Void, Void, Bitmap>(){
+                            @Override
+                            protected Bitmap doInBackground(Void... params) {
+                                // Load into image view
+                                try {
+                                    Bitmap bmp = Picasso.with(getActivity()).load(url).get();
+
+                                    // Create byte array
+                                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                    bmp.compress(Bitmap.CompressFormat.JPEG, 90, baos);
+                                    byte[] imageBytes = baos.toByteArray();
+
+                                    // Cache image
+                                    ImagesDatabaseSQLHelper.getInstance(getActivity()).insertImage(url, imageBytes);
+                                }catch (IOException e){
+                                    e.printStackTrace();
+                                }
+                                return null;
+                            }
+
+                            @Override
+                            protected void onPostExecute(Bitmap bitmap) {
+                                super.onPostExecute(bitmap);
+
+                                mImageView.setImageBitmap(bitmap);
+                            }
+                        }.execute();
+                    }
                 }else {
                     Picasso.with(getActivity()).load(R.drawable.emptybox_icon).into(imageView);
                 }
@@ -153,4 +199,17 @@ public class ConversationsFragment extends Fragment implements DialogsListAdapte
             }
         });
     }
+
+    public Bitmap loadImage(String url){
+        Cursor c = ImagesDatabaseSQLHelper.getInstance(getActivity()).getImage(url);
+
+        if (c != null && c.getCount() != 0){
+            c.moveToFirst();
+            byte[] img = c.getBlob(c.getColumnIndex(ImagesDatabaseSQLHelper.COLUMN_IMAGE));
+            return BitmapFactory.decodeByteArray(img, 0, img.length);
+        }else {
+            return null;
+        }
+    }
+
 }
