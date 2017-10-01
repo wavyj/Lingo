@@ -26,7 +26,7 @@
     <!-- Conversations -->
     <string name="messages_title">Messages</string>
     <string name="emptyMessages">Start Chatting. Click the + to get started.</string>
-    <string name="newConvo">New Coversation</string>
+    <string name="newConvo">New Conversation</string>
 
     <!-- Search -->
     <string name="search_hint">Search</string>

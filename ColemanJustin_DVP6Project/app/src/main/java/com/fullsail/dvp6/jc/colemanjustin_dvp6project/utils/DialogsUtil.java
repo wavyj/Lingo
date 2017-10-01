@@ -1,8 +1,10 @@
 package com.fullsail.dvp6.jc.colemanjustin_dvp6project.utils;
 
 import android.content.Context;
+import android.database.Cursor;
 
 import com.fullsail.dvp6.jc.colemanjustin_dvp6project.R;
+import com.fullsail.dvp6.jc.colemanjustin_dvp6project.databases.ConversationsDatabaseSQLHelper;
 import com.sendbird.android.AdminMessage;
 import com.sendbird.android.FileMessage;
 import com.sendbird.android.GroupChannel;
@@ -26,6 +28,15 @@ public final class DialogsUtil {
         ArrayList<Dialog> chats = new ArrayList<>();
         Message m = null;
         for (GroupChannel i: groupChannels) {
+            String channel = i.getUrl();
+            // Check if conversation is cached
+            if (ConversationsDatabaseSQLHelper.getInstance(context).checkConversation(channel)){
+                // Load cached data
+                Cursor c = ConversationsDatabaseSQLHelper.getInstance(context).getConversation(channel);
+
+
+                // Check if cached data needs to be updated
+            }
             if (i.getLastMessage() != null) {
                 if (UserMessage.buildFromSerializedData(i.getLastMessage().serialize()) instanceof UserMessage) {
                     UserMessage msg = (UserMessage) UserMessage.buildFromSerializedData(i.getLastMessage().serialize());

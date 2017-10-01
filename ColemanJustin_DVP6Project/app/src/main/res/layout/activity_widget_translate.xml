@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.fullsail.dvp6.jc.colemanjustin_dvp6project.widget.WidgetTranslateActivity">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_margin="16dp"
+        app:cardUseCompatPadding="true"
+        app:cardCornerRadius="5dp">
+
+        <TextView
+            android:id="@+id/queryText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="16dp"
+            android:text=""
+            android:textSize="17sp" />
+    </android.support.v7.widget.CardView>
+
+    <ImageView
+        android:layout_weight="1.6"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/down_icon"
+        android:layout_gravity="center"/>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_margin="16dp"
+        app:cardUseCompatPadding="true"
+        app:cardCornerRadius="5dp">
+
+        <TextView
+            android:id="@+id/resultText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="16dp"
+            android:text=""
+            android:textSize="17sp" />
+    </android.support.v7.widget.CardView>
+
+    <Button
+        android:id="@+id/retryBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Try Again"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/colorPrimary"/>
+
+</LinearLayout>

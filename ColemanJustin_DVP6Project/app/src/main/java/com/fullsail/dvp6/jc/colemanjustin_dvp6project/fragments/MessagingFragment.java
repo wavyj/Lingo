@@ -180,7 +180,6 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
                     Cursor c = ImagesDatabaseSQLHelper.getInstance(getActivity()).getImage(url);
 
                     if (c != null && c.getCount() != 0){
-                        Log.d(TAG, String.valueOf(c.getCount()));
                         c.moveToFirst();
                         byte[] img = c.getBlob(c.getColumnIndex(ImagesDatabaseSQLHelper.COLUMN_IMAGE));
                         Bitmap bmp = BitmapFactory.decodeByteArray(img, 0, img.length);
@@ -227,7 +226,7 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
             @Override
             public void onMessageViewClick(View view, Message message) {
                 // Show Message Text
-                if (!message.getText().equals("")) {
+                if (message instanceof ImageMessage && !message.getText().equals("")) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.dialog);
                     builder.setTitle(R.string.textDetect);
                     builder.setMessage(message.getText());
