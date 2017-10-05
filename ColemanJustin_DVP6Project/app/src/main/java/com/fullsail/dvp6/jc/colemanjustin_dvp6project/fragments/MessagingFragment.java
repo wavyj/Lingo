@@ -185,6 +185,8 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
                         Bitmap bmp = BitmapFactory.decodeByteArray(img, 0, img.length);
                         imageView.setImageBitmap(bmp);
                     }else {
+                        Picasso.with(getActivity()).load(url).into(imageView);
+
                         // Download from url if not cached
                             new AsyncTask<Void, Void, Bitmap>(){
                                 @Override
@@ -200,6 +202,7 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
 
                                         // Cache image
                                         ImagesDatabaseSQLHelper.getInstance(getActivity()).insertImage(url, imageBytes);
+                                        return bmp;
                                     }catch (IOException e){
                                         e.printStackTrace();
                                     }
@@ -209,8 +212,6 @@ public class MessagingFragment extends Fragment implements MessageInput.Attachme
                                 @Override
                                 protected void onPostExecute(Bitmap bitmap) {
                                     super.onPostExecute(bitmap);
-
-                                    imageView.setImageBitmap(bitmap);
                                 }
                             }.execute();
                     }

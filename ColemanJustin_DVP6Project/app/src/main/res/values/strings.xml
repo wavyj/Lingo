@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">ColemanJustin_DVP6Project</string>
+    <string name="app_name" translatable="false">Lingo</string>
 
     <!-- Login/Signup -->
     <string name="emailLabel">Email</string>

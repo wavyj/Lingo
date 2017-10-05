@@ -15,7 +15,7 @@
 
 
         <ImageView android:id="@+id/logo"
-            android:src="@drawable/message_plus_icon"
+            android:src="@mipmap/ic_launcher"
             android:layout_width="wrap_content"
             android:layout_height="72dp"
             android:layout_marginBottom="24dp"

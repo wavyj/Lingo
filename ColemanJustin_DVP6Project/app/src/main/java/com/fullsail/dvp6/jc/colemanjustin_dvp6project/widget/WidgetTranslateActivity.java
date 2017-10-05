@@ -88,6 +88,9 @@ public class WidgetTranslateActivity extends AppCompatActivity {
 
                 mTranslatedText = translation.getTranslatedText();
 
+                // Update Display
+                updateDisplay();
+
                 return null;
             }
         }.execute();

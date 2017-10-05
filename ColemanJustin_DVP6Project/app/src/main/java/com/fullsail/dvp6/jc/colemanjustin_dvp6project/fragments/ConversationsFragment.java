@@ -48,7 +48,6 @@ public class ConversationsFragment extends Fragment implements DialogsListAdapte
     private ArrayList<GroupChannel> mChannels;
     private boolean isLast = false;
     private ArrayList<Dialog> dialogs;
-    private ImageView mImageView;
 
     public static ConversationsFragment newInstance(ArrayList<String> channels) {
 
@@ -95,7 +94,6 @@ public class ConversationsFragment extends Fragment implements DialogsListAdapte
             @Override
             public void loadImage(ImageView imageView, final String url) {
                 if (url != null && !url.equals("")) {
-                    mImageView = imageView;
 
                     // Check if image is already saved an load from cache
                     Bitmap img = ConversationsFragment.this.loadImage(url);
@@ -103,6 +101,7 @@ public class ConversationsFragment extends Fragment implements DialogsListAdapte
                     if (img != null){
                         imageView.setImageBitmap(img);
                     } else {
+                        Picasso.with(getActivity()).load(url).into(imageView);
 
                         // Download from url if not cached
                         new AsyncTask<Void, Void, Bitmap>(){
@@ -119,6 +118,7 @@ public class ConversationsFragment extends Fragment implements DialogsListAdapte
 
                                     // Cache image
                                     ImagesDatabaseSQLHelper.getInstance(getActivity()).insertImage(url, imageBytes);
+                                    return bmp;
                                 }catch (IOException e){
                                     e.printStackTrace();
                                 }
@@ -128,8 +128,6 @@ public class ConversationsFragment extends Fragment implements DialogsListAdapte
                             @Override
                             protected void onPostExecute(Bitmap bitmap) {
                                 super.onPostExecute(bitmap);
-
-                                mImageView.setImageBitmap(bitmap);
                             }
                         }.execute();
                     }
